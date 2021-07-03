@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="tagName"
+            type="String" />
+    </data>
+
+    <com.google.android.material.chip.Chip
+        style="@style/Widget.MaterialComponents.Chip.Entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checkable="false"
+        app:closeIconVisible="false"
+        app:checkedIconEnabled="true"
+        app:checkedIconVisible="true"
+        app:checkedIconTint="@color/white"
+
+        android:text="@{tagName}"
+        android:textColor="@color/white"
+        app:chipBackgroundColor="@color/brown"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        tools:text="Tag"
+        android:textSize="12sp"/>
+
+</layout>
