@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:snacker/ui/pages/add_snack_page.dart';
 import 'package:snacker/ui/pages/list_page.dart';
 import 'package:snacker/ui/pages/search_page.dart';
 
@@ -27,23 +28,34 @@ final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
   }
 };
 
-final appBarList = (context, ref, tabController) => [
-      AppBar(
-        title: const Text("見つける"),
-        shape: appBarShape,
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.add))],
-      ),
-      AppBar(
-        title: const Text("一覧"),
-        shape: appBarShape,
-        bottom: tabBar(context, ref, tabController),
-      ),
-      AppBar(
-        title: const Text("ユーザー"),
-        shape: appBarShape,
-        actions: [],
-      ),
-    ];
+final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
+    (context, ref, tabController) => [
+          AppBar(
+            title: const Text("見つける"),
+            shape: appBarShape,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    final currentWebsite = ref.read(searchingWebsite).state;
+                    Navigator.of(context).push(MaterialPageRoute(
+                        settings: const RouteSettings(name: "add_snack"),
+                        builder: (context) =>
+                            AddSnackPage(url: currentWebsite)));
+                  },
+                  icon: Icon(Icons.add))
+            ],
+          ),
+          AppBar(
+            title: const Text("一覧"),
+            shape: appBarShape,
+            bottom: tabBar(context, ref, tabController),
+          ),
+          AppBar(
+            title: const Text("ユーザー"),
+            shape: appBarShape,
+            actions: [],
+          ),
+        ];
 
 final appBarIndexProvider = StateProvider((ref) => 0);
 
