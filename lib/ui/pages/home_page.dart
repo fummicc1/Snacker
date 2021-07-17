@@ -19,6 +19,7 @@ final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
         Tab(text: "最近"),
       ],
       labelColor: Theme.of(context).primaryColorLight,
+      unselectedLabelColor: Theme.of(context).primaryColorLight,
       controller: controller,
     );
   } else {
