@@ -23,8 +23,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  realm: ^0.1.0+preview
-  flutter_riverpod: ^1.0.0-dev.6
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^1.0.0-dev.6
   webview_flutter: ^2.0.10
 
 

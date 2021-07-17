@@ -195,8 +195,15 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_riverpod:
+  flutter_hooks:
     dependency: "direct main"
+    description:
+      name: flutter_hooks
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.18.0"
+  flutter_riverpod:
+    dependency: transitive
     description:
       name: flutter_riverpod
       url: "https://pub.dartlang.org"
@@ -228,6 +235,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
+  hooks_riverpod:
+    dependency: "direct main"
+    description:
+      name: hooks_riverpod
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-dev.6"
   http_multi_server:
     dependency: transitive
     description:
@@ -333,20 +347,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  realm:
-    dependency: "direct main"
-    description:
-      name: realm
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0+preview"
-  realm_generator:
-    dependency: transitive
-    description:
-      name: realm_generator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0+preview"
   riverpod:
     dependency: transitive
     description:
@@ -373,13 +373,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  source_gen:
-    dependency: transitive
-    description:
-      name: source_gen
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.10+4"
   source_span:
     dependency: transitive
     description:
