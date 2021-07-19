@@ -5,6 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/ui/pages/add_snack_page.dart';
 import 'package:snacker/ui/pages/list_page.dart';
 import 'package:snacker/ui/pages/search_page.dart';
+import 'package:snacker/ui/providers/add_snack_provider.dart';
+import 'package:snacker/ui/providers/app_bar_index_provider.dart';
+import 'package:snacker/ui/providers/search_website_provider.dart';
 
 const appBarShape = RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)));
@@ -36,11 +39,14 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
             actions: [
               IconButton(
                   onPressed: () {
-                    final currentWebsite = ref.read(searchingWebsite).state;
+                    final currentWebsite = ref.read(searchingWebsiteProvider).state;
                     Navigator.of(context).push(MaterialPageRoute(
                          settings: const RouteSettings(name: "add_snack"),
-                        builder: (context) =>
-                            AddSnackPage(url: currentWebsite)));
+                        builder: (context) {
+                           final provider = ref.watch(addSnackProvider);
+                           provider.updateUrl(currentWebsite);
+                           return AddSnackPage();
+                        }));
                   },
                   icon: Icon(Icons.add))
             ],
@@ -56,8 +62,6 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
             actions: [],
           ),
         ];
-
-final appBarIndexProvider = StateProvider((ref) => 0);
 
 class HomePage extends HookConsumerWidget {
   late TabController _tabController;

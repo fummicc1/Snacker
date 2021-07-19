@@ -29,7 +29,7 @@ class Snack {
         "url": url,
         "thumbnail_url": thumbnailUrl,
         "priority": priority,
-        "is_archived": isArchived
+        "is_archived": isArchived ? 1 : 0
       };
 
   Snack.fromMap({required Map<String, dynamic> map}) {
@@ -37,6 +37,6 @@ class Snack {
     title = map["title"] as String;
     thumbnailUrl = map["thumbnail_url"] as String? ?? "";
     priority = map["priority"] as int;
-    isArchived = map["is_archived"] as bool;
+    isArchived = map["is_archived"] == 1 ? true : false;
   }
 }

@@ -1,24 +1,32 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:snacker/entities/snack.dart';
-
-final addSnackProvider = StateProvider(
-        (ref) => Snack(title: "", url: "", priority: 3, isArchived: false));
+import 'package:snacker/domains/fetch_snack_usecase.dart';
+import 'package:snacker/ui/providers/add_snack_provider.dart';
 
 class AddSnackPage extends HookConsumerWidget {
-  final String url;
-
-  AddSnackPage({Key? key, required this.url}) : super(key: key);
+  AddSnackPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final snack = ref.watch(addSnackProvider).state;
+    final provider = ref.watch(addSnackProvider);
+    final snack = provider.snack;
+    final titleController = useTextEditingController(text: snack.title);
+    final urlController = useTextEditingController(text: snack.url);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text("記事の登録"),
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.add))],
+        actions: [
+          IconButton(
+              onPressed: () async {
+                await provider.register();
+                await fetchSnackUsecase.executeUnreadSnackList();
+                Navigator.of(context).pop();
+              },
+              icon: Icon(Icons.add))
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -27,11 +35,19 @@ class AddSnackPage extends HookConsumerWidget {
             SizedBox(
               height: 16,
             ),
-            TextField(),
+            TextField(
+              controller: urlController,
+              decoration: InputDecoration(labelText: "URL"),
+              onChanged: (url) => provider.updateUrl(url),
+            ),
             SizedBox(
               height: 16,
             ),
-            TextField(),
+            TextField(
+              controller: titleController,
+              decoration: InputDecoration(labelText: "記事のタイトル"),
+              onChanged: (title) => provider.updateTitle(title),
+            ),
             SizedBox(
               height: 16,
             ),
@@ -42,23 +58,21 @@ class AddSnackPage extends HookConsumerWidget {
                   Text("優先度"),
                   Flexible(
                       child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
+                          scrollDirection: Axis.horizontal,
                           itemCount: 5,
                           itemBuilder: (context, index) {
-                            if (index + 1 < snack.priority) {
+                            if (index + 1 <= snack.priority) {
                               return IconButton(
                                   onPressed: () {
-                                    ref.read(addSnackProvider).state.priority =
-                                        index + 1;
+                                    provider.updatePriority(index + 1);
                                   },
-                                  icon: Icon(Icons.star));
+                                  icon: Icon(Icons.star, size: 32));
                             } else {
                               return IconButton(
                                   onPressed: () {
-                                    ref.read(addSnackProvider).state.priority =
-                                        index + 1;
+                                    provider.updatePriority(index + 1);
                                   },
-                                  icon: Icon(Icons.star_border));
+                                  icon: Icon(Icons.star_border, size: 32));
                             }
                           }))
                 ],

@@ -44,7 +44,7 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   @override
   Future<List<Snack>> executeUnreadSnackList() async {
 
-    final isArchivedQuery = EqualQueryModel(field: "is_archived", value: false);
+    final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "0");
 
     final List<Snack> snackList = await _snackRepository.getSnackWithQuery(queries: [isArchivedQuery]);
     return snackList;

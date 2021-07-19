@@ -3,12 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/ui/components/snack_list_item.dart';
-
-final unReadSnackListProvider =
-    StateProvider((ref) => fetchSnackUsecase.executeUnreadSnackList());
+import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class UnReadSnackListPage extends HookConsumerWidget {
   @override
