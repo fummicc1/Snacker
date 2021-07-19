@@ -38,7 +38,7 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
                   onPressed: () {
                     final currentWebsite = ref.read(searchingWebsite).state;
                     Navigator.of(context).push(MaterialPageRoute(
-                        settings: const RouteSettings(name: "add_snack"),
+                         settings: const RouteSettings(name: "add_snack"),
                         builder: (context) =>
                             AddSnackPage(url: currentWebsite)));
                   },
