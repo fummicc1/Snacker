@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:snacker/entities/snack.dart';
+
+final addSnackProvider = StateProvider(
+        (ref) => Snack(title: "", url: "", priority: 3, isArchived: false));
 
 class AddSnackPage extends HookConsumerWidget {
   final String url;
@@ -10,6 +13,8 @@ class AddSnackPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final snack = ref.watch(addSnackProvider).state;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("記事の登録"),
@@ -19,24 +24,45 @@ class AddSnackPage extends HookConsumerWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             TextField(),
-            SizedBox(height: 16,),
+            SizedBox(
+              height: 16,
+            ),
             TextField(),
-            SizedBox(height: 16,),
-            Row(
-              children: [
-                Text("優先度"),
-                Wrap(
-                  children: [
-                    IconButton(onPressed: null, icon: Icon(Icons.star)),
-                    IconButton(onPressed: null, icon: Icon(Icons.star)),
-                    IconButton(onPressed: null, icon: Icon(Icons.star)),
-                    IconButton(onPressed: null, icon: Icon(Icons.star)),
-                    IconButton(onPressed: null, icon: Icon(Icons.star)),
-                  ],
-                )
-              ],
+            SizedBox(
+              height: 16,
+            ),
+            Container(
+              height: 64,
+              child: Row(
+                children: [
+                  Text("優先度"),
+                  Flexible(
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            if (index + 1 < snack.priority) {
+                              return IconButton(
+                                  onPressed: () {
+                                    ref.read(addSnackProvider).state.priority =
+                                        index + 1;
+                                  },
+                                  icon: Icon(Icons.star));
+                            } else {
+                              return IconButton(
+                                  onPressed: () {
+                                    ref.read(addSnackProvider).state.priority =
+                                        index + 1;
+                                  },
+                                  icon: Icon(Icons.star_border));
+                            }
+                          }))
+                ],
+              ),
             )
           ],
         ),

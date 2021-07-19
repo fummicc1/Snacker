@@ -2,22 +2,46 @@ import 'package:path/path.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:sqflite/sqflite.dart';
 
+class EqualQueryModel {
+  final String field;
+  final dynamic value;
+
+  EqualQueryModel({required this.field, required this.value});
+
+  String buildWhere({required String from}) {
+    return join(from, " $field = ? ");
+  }
+
+  List<String> buildArgs({required List<String> from}) {
+    from.add(value);
+    return from;
+  }
+}
+
 mixin DatabaseType {
-  Future<int> create({required Map<String, dynamic> data, required String tableName});
-  Future<int> update({required Map<String, dynamic> data, required String tableName});
+  Future<int> create(
+      {required Map<String, dynamic> data, required String tableName});
+
+  Future<int> update(
+      {required Map<String, dynamic> data, required String tableName});
+
   Future<List<Map<String, dynamic>>> readAll({required String tableName});
-  Future<Map<String, dynamic>> read({required String tableName, required String where, required List<String> whereArgs});
+
+  Future<List<Map<String, dynamic>>> read(
+      {required String tableName,
+      required String where,
+      required List<String> whereArgs});
+
   Future<int> delete({required int id, required String tableName});
 }
 
 class DatabaseManager with DatabaseType {
-  
   late Database _database;
-  
+
   DatabaseManager() {
     open().then((database) => this._database = database);
   }
-  
+
   @override
   Future<Database> open() async {
     final database = openDatabase(join(await getDatabasesPath(), "snacker.db"),
@@ -27,32 +51,39 @@ class DatabaseManager with DatabaseType {
     }, version: 1);
     return database;
   }
-  
+
   @override
-  Future<int> create({required Map<String, dynamic> data, required String tableName}) async {
+  Future<int> create(
+      {required Map<String, dynamic> data, required String tableName}) async {
     final response = await _database.insert(tableName, data);
     return Future.value(response);
   }
-  
+
   @override
-  Future<int> update({required Map<String, dynamic> data, required String tableName}) async {
+  Future<int> update(
+      {required Map<String, dynamic> data, required String tableName}) async {
     final response = await _database.update(tableName, data);
     return Future.value(response);
   }
 
   @override
-  Future<List<Map<String, dynamic>>> readAll({required String tableName}) async {
+  Future<List<Map<String, dynamic>>> readAll(
+      {required String tableName}) async {
     final response = await _database.query(tableName);
     return Future.value(response);
   }
 
   @override
-  Future<Map<String, dynamic>> read({required String tableName, required String where, required List<String> whereArgs}) async {
-    final response = await _database.query(tableName, where: where, whereArgs: whereArgs);
+  Future<List<Map<String, dynamic>>> read(
+      {required String tableName,
+      required String where,
+      required List<String> whereArgs}) async {
+    final response =
+        await _database.query(tableName, where: where, whereArgs: whereArgs);
     if (response.isEmpty) {
       return Future.error("Empty Query Result");
     }
-    return Future.value(response.first);
+    return Future.value(response);
   }
 
   @override
@@ -60,3 +91,5 @@ class DatabaseManager with DatabaseType {
     return _database.delete(tableName, where: "id = ?", whereArgs: [id]);
   }
 }
+
+final DatabaseType database = DatabaseManager();

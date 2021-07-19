@@ -14,9 +14,11 @@ class MyApp extends HookConsumerWidget {
     return MaterialApp(
       title: 'Snacker',
       theme: ThemeData(
+          primaryColorDark: primaryColor,
           primaryColor: primaryColor,
+          accentColor: primaryColor,
           primaryColorLight: lightPrimaryColor,
-      backgroundColor: secondaryBackgroundColor),
+          backgroundColor: secondaryBackgroundColor),
       home: HomePage(),
     );
   }

@@ -11,6 +11,8 @@ class Snack {
 
   late int priority;
 
+  late bool isArchived;
+
   static const tableName = "snacks";
 
   Snack(
@@ -18,7 +20,8 @@ class Snack {
       required this.title,
       required this.url,
       this.thumbnailUrl,
-      required this.priority});
+      required this.priority,
+      required this.isArchived});
 
   Map<String, dynamic> toMap() => {
         "id": id,
@@ -26,6 +29,7 @@ class Snack {
         "url": url,
         "thumbnail_url": thumbnailUrl,
         "priority": priority,
+        "is_archived": isArchived
       };
 
   Snack.fromMap({required Map<String, dynamic> map}) {
@@ -33,5 +37,6 @@ class Snack {
     title = map["title"] as String;
     thumbnailUrl = map["thumbnail_url"] as String? ?? "";
     priority = map["priority"] as int;
+    isArchived = map["is_archived"] as bool;
   }
 }

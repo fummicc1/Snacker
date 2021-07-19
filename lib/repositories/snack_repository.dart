@@ -9,6 +9,8 @@ mixin SnackRepository {
   Future<Snack> getSnack({required int id});
 
   Future<List<Snack>> getAllSnack({bool useCache = false});
+
+  Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries});
   
   Future deleteSnack({required int id});
 }
@@ -47,7 +49,10 @@ class SnackRepositoryImpl with SnackRepository {
   @override
   Future<Snack> getSnack({required int id}) async {
     final response = await _databaseType.read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
-    return Snack.fromMap(map: response);
+    if (response.isEmpty) {
+      return Future.error("No snack found");
+    }
+    return Snack.fromMap(map: response.first);
   }
 
   @override
@@ -55,5 +60,25 @@ class SnackRepositoryImpl with SnackRepository {
     return _databaseType.update(data: newSnack.toMap(), tableName: Snack.tableName);
   }
 
-  
+  @override
+  Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries}) async {
+
+    String where = "";
+    List<String> args = [];
+
+    for (int i = 0; i < queries.length; i++) {
+      final query = queries[i];
+      where = query.buildWhere(from: where);
+      args = query.buildArgs(from: args);
+    }
+
+    try {
+      final response = await _databaseType.read(tableName: Snack.tableName, where: where, whereArgs: args);
+      return response.map((res) => Snack.fromMap(map: res)).toList();
+    } catch (e) {
+      return Future.error(e);
+    }
+  }
 }
+
+final SnackRepository snackRepository = SnackRepositoryImpl(database);
