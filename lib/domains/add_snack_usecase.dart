@@ -13,7 +13,9 @@ class AddSnackInteractor with AddSnackUseCase {
 
   @override
   Future execute({required String url, required String title, String? thumbnailUrl, required int priority}) {
-    final Snack snack = Snack(title: title, url: url, priority: priority);
+    final Snack snack = Snack(title: title, url: url, priority: priority, isArchived: false);
     return _snackRepository.createSnack(snack: snack);
   }
 }
+
+final addSnackUsecase = AddSnackInteractor(snackRepository);
