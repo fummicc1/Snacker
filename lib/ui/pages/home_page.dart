@@ -38,13 +38,13 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
             shape: appBarShape,
             actions: [
               IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final currentWebsite = ref.read(searchingWebsiteProvider).state;
+                    final provider = ref.watch(addSnackProvider);
+                    await provider.updateUrl(currentWebsite, shouldScraping: true);
                     Navigator.of(context).push(MaterialPageRoute(
                          settings: const RouteSettings(name: "add_snack"),
                         builder: (context) {
-                           final provider = ref.watch(addSnackProvider);
-                           provider.updateUrl(currentWebsite);
                            return AddSnackPage();
                         }));
                   },

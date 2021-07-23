@@ -38,7 +38,7 @@ class AddSnackPage extends HookConsumerWidget {
             TextField(
               controller: urlController,
               decoration: InputDecoration(labelText: "URL"),
-              onChanged: (url) => provider.updateUrl(url),
+              onChanged: (url) => provider.updateUrl(url, shouldScraping: false),
             ),
             SizedBox(
               height: 16,
