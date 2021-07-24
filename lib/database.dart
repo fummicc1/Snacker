@@ -43,13 +43,17 @@ class DatabaseManager with DatabaseType {
 
   @override
   Future<Database> open() async {
-    final database = await openDatabase(join(await getDatabasesPath(), "snacker.db"),
-        onCreate: (database, version) {
-      return database.execute(
-          "CREATE TABLE IF NOT EXISTS snacks(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, thumbnail_url TEXT, priority INTEGER NOT NULL, is_archived INTEGER NOT NULL)");
-    }, version: 1);
-    _database = database;
-    return database;
+    try {
+      final database = await openDatabase(join(await getDatabasesPath(), "snacker.db"),
+          onCreate: (database, version) {
+            return database.execute(
+                "CREATE TABLE IF NOT EXISTS snacks(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, thumbnail_url TEXT, priority INTEGER NOT NULL, is_archived INTEGER NOT NULL)");
+          }, version: 1);
+      _database = database;
+      return database;
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 
   @override

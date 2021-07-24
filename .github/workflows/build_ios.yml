@@ -1,0 +1,21 @@
+name: build ios
+on: 
+  pull_request: 
+    branches: main
+  push:
+    branches: main
+
+jobs:
+  build_ios:
+    name: "Build iOS"
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repository      
+        uses: actions/checkout@v2
+      - name: Install Flutter
+        uses: subosito/flutter-actions@v1
+        with:
+          flutter-version: "2.2.3"
+      - name: Build iOS
+        run: flutter build ios
+      

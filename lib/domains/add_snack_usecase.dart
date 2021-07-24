@@ -5,11 +5,11 @@ mixin AddSnackUseCase {
   Future execute({required String url, required String title, String? thumbnailUrl, required int priority});
 }
 
-class AddSnackInteractor with AddSnackUseCase {
+class AddSnackUseCaseImpl with AddSnackUseCase {
 
   final SnackRepository _snackRepository;
 
-  AddSnackInteractor(this._snackRepository);
+  AddSnackUseCaseImpl(this._snackRepository);
 
   @override
   Future execute({required String url, required String title, String? thumbnailUrl, required int priority}) {
@@ -17,5 +17,3 @@ class AddSnackInteractor with AddSnackUseCase {
     return _snackRepository.createSnack(snack: snack);
   }
 }
-
-final addSnackUsecase = AddSnackInteractor(snackRepository);

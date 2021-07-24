@@ -80,5 +80,3 @@ class SnackRepositoryImpl with SnackRepository {
     }
   }
 }
-
-final SnackRepository snackRepository = SnackRepositoryImpl(database);

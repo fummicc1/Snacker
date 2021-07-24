@@ -8,6 +8,7 @@ import 'package:snacker/ui/pages/list_page.dart';
 import 'package:snacker/ui/pages/search_page.dart';
 import 'package:snacker/ui/providers/add_snack_provider.dart';
 import 'package:snacker/ui/providers/app_bar_index_provider.dart';
+import 'package:snacker/ui/providers/fetch_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/search_website_provider.dart';
 
 const appBarShape = RoundedRectangleBorder(
@@ -40,13 +41,18 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
             actions: [
               IconButton(
                   onPressed: () async {
-                    final currentWebsite = ref.read(searchingWebsiteProvider).state;
+                    final currentWebsite =
+                        ref.read(searchingWebsiteProvider).state;
                     final provider = ref.watch(addSnackProvider);
-                    await provider.updateUrl(currentWebsite, shouldScraping: true);
+                    await provider
+                        .updateUrl(currentWebsite, shouldScraping: true)
+                        .catchError((_) => "");
                     Navigator.of(context).push(MaterialPageRoute(
-                         settings: const RouteSettings(name: "add_snack"),
+                        settings: const RouteSettings(name: "add_snack"),
                         builder: (context) {
-                           return AddSnackPage(fetchSnackUseCase: fetchSnackUsecase);
+                          final fetchSnackUseCase = ref.read(fetchSnackUsecaseProvider);
+                          return AddSnackPage(
+                              fetchSnackUseCase: fetchSnackUseCase);
                         }));
                   },
                   icon: Icon(Icons.add))

@@ -3,11 +3,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/domains/add_snack_usecase.dart';
 import 'package:snacker/domains/get_web_page_title_usecase.dart';
 import 'package:snacker/entities/snack.dart';
+import 'package:snacker/ui/providers/add_snack_usecase_provider.dart';
+import 'package:snacker/ui/providers/get_webpage_title_usecase_provider.dart';
 
-final addSnackProvider = ChangeNotifierProvider((ref) => AddSnackProvider(
+final addSnackProvider = ChangeNotifierProvider<AddSnackProvider>((ref) {
+  final addSnackUseCase = ref.read(addSnackUseCaseProvider);
+  final getWebPageTitleUseCase = ref.read(getWebPageTitleUseCaseProvider);
+  return AddSnackProvider(
     Snack(title: "", url: "", priority: 3, isArchived: false),
-    addSnackUsecase,
-    GetWebPageTitleUseCaseImpl()));
+    addSnackUseCase,
+    getWebPageTitleUseCase,
+  );
+});
 
 class AddSnackProvider extends ChangeNotifier {
   final Snack snack;
@@ -22,15 +29,20 @@ class AddSnackProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  updateUrl(String url, {required bool shouldScraping}) async {
+  Future updateUrl(String url, {required bool shouldScraping}) async {
     snack.url = url;
 
-    if (shouldScraping) {
-      final title = await _getWebPageTitleUseCase.execute(url: url);
-      snack.title = title;
-      notifyListeners();
-    } else {
-      notifyListeners();
+    try {
+      if (shouldScraping) {
+        final title = await _getWebPageTitleUseCase.execute(url: url);
+        snack.title = title;
+        notifyListeners();
+      } else {
+        notifyListeners();
+      }
+      return true;
+    } catch (e) {
+      return Future.error(e);
     }
   }
 

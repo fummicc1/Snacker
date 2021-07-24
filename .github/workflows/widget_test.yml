@@ -1,0 +1,25 @@
+name: Widget Test
+on:
+  pull_request:
+    branches: main
+  push:
+    branches: main
+
+jobs:
+  widget_test:
+    name: "Widget Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up java
+        uses: actions/setup-java@v1
+        with:
+          java-version: "11.x"
+      - uses: subosito/flutter-actions@v1
+        with:
+          flutter_version: "2.2.3"
+      - name: Get dependencies
+        run: flutter pub get
+      - name: Test Widget
+        run: flutter test
