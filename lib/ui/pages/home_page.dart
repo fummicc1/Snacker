@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/ui/pages/add_snack_page.dart';
 import 'package:snacker/ui/pages/list_page.dart';
 import 'package:snacker/ui/pages/search_page.dart';
@@ -45,7 +46,7 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
                     Navigator.of(context).push(MaterialPageRoute(
                          settings: const RouteSettings(name: "add_snack"),
                         builder: (context) {
-                           return AddSnackPage();
+                           return AddSnackPage(fetchSnackUseCase: fetchSnackUsecase);
                         }));
                   },
                   icon: Icon(Icons.add))
