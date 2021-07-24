@@ -14,11 +14,11 @@ mixin FetchSnackUsecase {
 class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
   final SnackRepository _snackRepository;
-  int _requestCountPerminute = 0;
+  int _requestCountPerMinute = 0;
 
   FetchSnackUsecaseImpl(this._snackRepository) {
     Timer.periodic(Duration(minutes: 1), (timer) {
-      _requestCountPerminute = 0;
+      _requestCountPerMinute = 0;
     });
   }
 
@@ -27,11 +27,11 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   @override
   Future<List<Snack>> executeList() async {
 
-    final useCache = _requestCountPerminute > 5 ? true : false;
+    final useCache = _requestCountPerMinute > 5 ? true : false;
 
     final snackList = await _snackRepository.getAllSnack(useCache: useCache);
 
-    _requestCountPerminute++;
+    _requestCountPerMinute++;
 
     return snackList;
   }

@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 
 class Snack {
-  late int? id;
+  int? id;
 
-  late String title;
+  String title;
 
-  late String url;
+  String url;
 
-  late String? thumbnailUrl;
+  String? thumbnailUrl;
 
-  late int priority;
+  int priority;
 
-  late bool isArchived;
+  bool isArchived;
 
   static const tableName = "snacks";
 
@@ -32,11 +32,19 @@ class Snack {
         "is_archived": isArchived ? 1 : 0
       };
 
-  Snack.fromMap({required Map<String, dynamic> map}) {
-    id = map["id"] as int;
-    title = map["title"] as String;
-    thumbnailUrl = map["thumbnail_url"] as String? ?? "";
-    priority = map["priority"] as int;
-    isArchived = map["is_archived"] == 1 ? true : false;
+  factory Snack.fromMap({required Map<String, dynamic> map}) {
+    var id = map["id"] as int;
+    var title = map["title"] as String;
+    var url = map["url"] as String;
+    var thumbnailUrl = map["thumbnail_url"] as String? ?? "";
+    var priority = map["priority"] as int;
+    var isArchived = map["is_archived"] == 1 ? true : false;
+    return Snack(
+        id: id,
+        title: title,
+        url: url,
+        thumbnailUrl: thumbnailUrl,
+        priority: priority,
+        isArchived: isArchived);
   }
 }

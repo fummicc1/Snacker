@@ -4,13 +4,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/ui/providers/add_snack_provider.dart';
+import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class AddSnackPage extends HookConsumerWidget {
-  AddSnackPage({Key? key}) : super(key: key);
+  AddSnackPage({Key? key, required this.fetchSnackUseCase}) : super(key: key);
+
+  final FetchSnackUsecase fetchSnackUseCase;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(addSnackProvider);
+    final listProvider = ref.watch(unReadSnackListProvider);
     final snack = provider.snack;
     final titleController = useTextEditingController(text: snack.title);
     final urlController = useTextEditingController(text: snack.url);
@@ -22,7 +26,7 @@ class AddSnackPage extends HookConsumerWidget {
           IconButton(
               onPressed: () async {
                 await provider.register();
-                await fetchSnackUsecase.executeUnreadSnackList();
+                listProvider.state = fetchSnackUseCase.executeUnreadSnackList();
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.add))
@@ -38,7 +42,7 @@ class AddSnackPage extends HookConsumerWidget {
             TextField(
               controller: urlController,
               decoration: InputDecoration(labelText: "URL"),
-              onChanged: (url) => provider.updateUrl(url),
+              onChanged: (url) => provider.updateUrl(url, shouldScraping: false),
             ),
             SizedBox(
               height: 16,
