@@ -17,5 +17,5 @@ jobs:
         with:
           flutter-version: "2.2.3"
       - name: Build iOS
-        run: flutter build ios
+        run: flutter build ios --simulator
       
