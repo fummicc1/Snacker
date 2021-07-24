@@ -1,9 +1,9 @@
 name: build ios
 on: 
   pull_request: 
-    branches: main
+    branches: flutter
   push:
-    branches: main
+    branches: flutter
 
 jobs:
   build_ios:

@@ -1,9 +1,9 @@
 name: Widget Test
 on:
   pull_request:
-    branches: main
+    branches: flutter
   push:
-    branches: main
+    branches: flutter
 
 jobs:
   widget_test:
