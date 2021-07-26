@@ -12,6 +12,9 @@ class SnackListItem extends StatelessWidget {
     return Card(
       child: ListTile(
         title: Text(snack.title),
+        onTap: () {
+
+        },
       )
     );
   }

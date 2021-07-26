@@ -16,7 +16,7 @@ class Snack {
   static const tableName = "snacks";
 
   Snack(
-      {this.id = null,
+      {this.id,
       required this.title,
       required this.url,
       this.thumbnailUrl,
