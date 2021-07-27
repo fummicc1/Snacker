@@ -6,28 +6,21 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/ui/components/list_empty_state_widget.dart';
 import 'package:snacker/ui/components/snack_list_item.dart';
+import 'package:snacker/ui/providers/detail_snack_provider.dart';
+import 'package:snacker/ui/providers/search_website_provider.dart';
 import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class UnReadSnackListPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final unReadSnackList = ref.watch(unReadSnackListProvider).state;
+    final unReadSnackList = ref
+        .watch(unReadSnackListProvider);
 
-    return FutureBuilder(
-      future: unReadSnackList,
-      initialData: [],
-      builder: (context, snapshot) {
-        if (snapshot.hasData && snapshot.data is List<Snack>) {
-          final snackList = snapshot.data as List<Snack>;
-          if (snackList.isEmpty) {
-            return buildEmptyView(context, ref);
-          }
-          return buildContentView(context, ref, snackList: snackList);
-        } else {
-          return buildEmptyView(context, ref);
-        }
-      },
-    );
+    return unReadSnackList.when(
+        data: (snackList) =>
+            buildContentView(context, ref, snackList: snackList),
+        loading: () => buildEmptyView(context, ref),
+        error: (error, _) => buildEmptyView(context, ref));
   }
 
   Widget buildEmptyView(BuildContext context, WidgetRef ref) {

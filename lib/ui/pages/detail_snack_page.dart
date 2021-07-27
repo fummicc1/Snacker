@@ -1,22 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/entities/snack.dart';
+import 'package:snacker/ui/components/snack_webview.dart';
+import 'package:snacker/ui/providers/detail_snack_provider.dart';
+import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DetailSnackPage extends HookConsumerWidget {
-
-  DetailSnackPage({Key? key, required this.snack}) : super(key: key);
-
-  final Snack snack;
+  const DetailSnackPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final updateSnackUseCase = ref.watch(updateSnackUseCaseProvider);
+
+    final snack = ref.watch(detailSnackProvider).state;
+
+    if (snack == null) {
+      return Container();
+    }
+
     return Scaffold(
       body: buildBody(context, ref),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+              onPressed: () {
+                launch(snack.url);
+              },
+              icon: Icon(Icons.open_in_browser_rounded))
+        ],
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        label: buildFABLabel(snack: snack),
+        icon: buildFABIcon(snack: snack),
+        onPressed: () async {
+          snack.isArchived = !snack.isArchived;
+          try {
+            await updateSnackUseCase.execute(newSnack: snack);
+            ref.read(detailSnackProvider).state = snack;
+          } catch (e) {
+            assert(false, e.toString());
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("エラーが発生しました")));
+          }
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
+  Widget buildFABIcon({ required Snack snack }) {
+    final isArchived = snack.isArchived;
+    if (isArchived) {
+      return Icon(Icons.check_box);
+    } else {
+      return Icon(Icons.check_box_outline_blank);
+    }
+  }
+
+  Widget buildFABLabel({ required Snack snack }) {
+    final isArchived = snack.isArchived;
+    if (isArchived) {
+      return Text("アーカイブ済み");
+    } else {
+      return Text("未読");
+    }
+  }
+
   Widget buildBody(BuildContext context, WidgetRef ref) {
-    return Container();
+    return Stack(
+      children: [
+        SnackWebView(
+          websiteProvider: detailPageWebsiteProvider,
+        )
+      ],
+    );
   }
 }

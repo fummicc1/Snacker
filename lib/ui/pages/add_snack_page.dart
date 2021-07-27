@@ -2,19 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/ui/providers/add_snack_provider.dart';
+import 'package:snacker/ui/providers/fetch_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class AddSnackPage extends HookConsumerWidget {
-  AddSnackPage({Key? key, required this.fetchSnackUseCase}) : super(key: key);
-
-  final FetchSnackUsecase fetchSnackUseCase;
+  AddSnackPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(addSnackProvider);
-    final listProvider = ref.watch(unReadSnackListProvider);
     final snack = provider.snack;
     final titleController = useTextEditingController(text: snack.title);
     final urlController = useTextEditingController(text: snack.url);
@@ -26,7 +23,6 @@ class AddSnackPage extends HookConsumerWidget {
           IconButton(
               onPressed: () async {
                 await provider.register();
-                listProvider.state = fetchSnackUseCase.executeUnreadSnackList();
                 Navigator.of(context).pop();
               },
               icon: Icon(Icons.add))

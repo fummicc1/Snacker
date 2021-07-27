@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack.dart';
 
@@ -8,7 +10,7 @@ mixin SnackRepository {
 
   Future<Snack> getSnack({required int id});
 
-  Future<List<Snack>> getAllSnack({bool useCache = false});
+  Future<List<Snack>> getAllSnack();
 
   Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries});
   
@@ -17,8 +19,6 @@ mixin SnackRepository {
 
 class SnackRepositoryImpl with SnackRepository {
   final DatabaseType _databaseType;
-
-  List<Snack> _snackList = [];
 
   SnackRepositoryImpl(this._databaseType);
 
@@ -33,14 +33,12 @@ class SnackRepositoryImpl with SnackRepository {
   }
 
   @override
-  Future<List<Snack>> getAllSnack({bool useCache = false}) async {
-    if (useCache) {
-      return _snackList;
-    }
+  Future<List<Snack>> getAllSnack() async {
+
     try {
       final response = await _databaseType.readAll(tableName: Snack.tableName);
-      this._snackList = response.map((map) => Snack.fromMap(map: map)).toList().cast<Snack>();
-      return _snackList;
+      final snackList = response.map((map) => Snack.fromMap(map: map)).toList().cast<Snack>();
+      return snackList;
     } catch (e) {
       return Future.error(e);
     }

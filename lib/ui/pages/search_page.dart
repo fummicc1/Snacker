@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:snacker/ui/components/snack_webview.dart';
 import 'package:snacker/ui/providers/search_website_provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -13,24 +14,10 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final currentWebsite = ref.watch(searchingWebsiteProvider).state;
 
     return Stack(
       children: [
-        WebView(
-          initialUrl: currentWebsite,
-          onWebViewCreated: onWebViewCreated,
-          javascriptMode: JavascriptMode.unrestricted,
-          onPageFinished: (url) {
-            ref.read(searchingWebsiteProvider).state = url;
-          },
-          onProgress: (progress) {
-            ref.read(websiteLoadingProgressProvider).state = progress;
-          },
-          onWebResourceError: (error) {
-            print(error.description);
-          },
-        ),
+        SnackWebView(completer: _completer, websiteProvider: searchingWebsiteProvider,),
         Positioned(
           top: 0,
           left: 0,
@@ -92,9 +79,5 @@ class SearchPage extends HookConsumerWidget {
           }
           return Container();
         });
-  }
-
-  onWebViewCreated(WebViewController webViewController) {
-    _completer.complete(webViewController);
   }
 }
