@@ -14,10 +14,17 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final searchingWebsite = ref.watch(searchingWebsiteProvider).state;
 
     return Stack(
       children: [
-        SnackWebView(completer: _completer, websiteProvider: searchingWebsiteProvider,),
+        SnackWebView(
+          completer: _completer,
+          website: searchingWebsite,
+          onChangeWebsite: (url) {
+            ref.read(searchingWebsiteProvider).state = url;
+          },
+        ),
         Positioned(
           top: 0,
           left: 0,
@@ -56,14 +63,24 @@ class SearchPage extends HookConsumerWidget {
             return FutureBuilder<bool>(
                 future: snapshot.requireData.canGoBack(),
                 builder: (context, canGoBackSnapshot) {
-
-                  if (canGoBackSnapshot.hasData && canGoBackSnapshot.requireData) {
+                  if (canGoBackSnapshot.hasData &&
+                      canGoBackSnapshot.requireData) {
                     return Container(
                       decoration: BoxDecoration(
+                          boxShadow: [
+                            BoxShadow(
+                                color: Theme.of(context).primaryColor,
+                                blurRadius: 2,
+                                spreadRadius: 1,
+                                offset: Offset(0, 2))
+                          ],
                           color: Theme.of(context).scaffoldBackgroundColor,
                           shape: BoxShape.circle),
                       child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios_new),
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          size: 28,
+                        ),
                         color: Theme.of(context).primaryColor,
                         onPressed: () async {
                           final canBack = canGoBackSnapshot.data ?? false;

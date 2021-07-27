@@ -6,15 +6,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/ui/components/list_empty_state_widget.dart';
 import 'package:snacker/ui/components/snack_list_item.dart';
-import 'package:snacker/ui/providers/detail_snack_provider.dart';
-import 'package:snacker/ui/providers/search_website_provider.dart';
 import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class UnReadSnackListPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final unReadSnackList = ref
-        .watch(unReadSnackListProvider);
+    final unReadSnackList = ref.watch(unReadSnackListProvider);
 
     return unReadSnackList.when(
         data: (snackList) =>

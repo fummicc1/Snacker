@@ -35,12 +35,9 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   Stream<List<Snack>> get archivedSnackList =>
       _archivedSnackListController.stream.asBroadcastStream();
 
-  StreamController<List<Snack>> _allSnackListController =
-      StreamController.broadcast();
-  StreamController<List<Snack>> _unreadSnackListController =
-      StreamController.broadcast();
-  StreamController<List<Snack>> _archivedSnackListController =
-      StreamController.broadcast();
+  StreamController<List<Snack>> _allSnackListController = StreamController();
+  StreamController<List<Snack>> _unreadSnackListController = StreamController();
+  StreamController<List<Snack>> _archivedSnackListController = StreamController();
 
   FetchSnackUsecaseImpl(this._snackRepository) {
     Timer.periodic(Duration(minutes: 1), (timer) {
@@ -57,9 +54,11 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
       return snackList.last;
     }
 
-    final list = await _snackRepository.getAllSnack();
+    final list = await _snackRepository
+        .getAllSnack()
+        .catchError((_) => [].cast<Snack>());
 
-    _allSnackListController.sink.add(list);
+    _allSnackListController.add(list);
 
     _requestCountPerMinute++;
 
@@ -82,10 +81,10 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
     final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "1");
 
-    final List<Snack> snackList =
-        await _snackRepository.getSnackWithQuery(queries: [isArchivedQuery]);
+    final List<Snack> snackList = await _snackRepository.getSnackWithQuery(
+        queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
 
-    _archivedSnackListController.sink.add(snackList);
+    _archivedSnackListController.add(snackList);
 
     _requestCountPerMinute++;
 
@@ -103,10 +102,10 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
     final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "0");
 
-    final List<Snack> snackList =
-        await _snackRepository.getSnackWithQuery(queries: [isArchivedQuery]);
+    final List<Snack> snackList = await _snackRepository.getSnackWithQuery(
+        queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
 
-    _unreadSnackListController.sink.add(snackList);
+    _unreadSnackListController.add(snackList);
 
     _requestCountPerMinute++;
 

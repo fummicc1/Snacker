@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/ui/components/snack_webview.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
+import 'package:snacker/ui/providers/search_website_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -14,6 +15,7 @@ class DetailSnackPage extends HookConsumerWidget {
     final updateSnackUseCase = ref.watch(updateSnackUseCaseProvider);
 
     final snack = ref.watch(detailSnackProvider).state;
+    final currentWebsite = ref.watch(detailPageWebsiteProvider).state;
 
     if (snack == null) {
       return Container();
@@ -22,12 +24,13 @@ class DetailSnackPage extends HookConsumerWidget {
     return Scaffold(
       body: buildBody(context, ref),
       appBar: AppBar(
+        title: Text(Uri.parse(snack.url).host),
         actions: [
           IconButton(
               onPressed: () {
-                launch(snack.url);
+                launch(currentWebsite);
               },
-              icon: Icon(Icons.open_in_browser_rounded))
+              icon: Icon(Icons.open_in_browser_rounded)),
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -67,10 +70,16 @@ class DetailSnackPage extends HookConsumerWidget {
   }
 
   Widget buildBody(BuildContext context, WidgetRef ref) {
+
+    final website = ref.watch(detailPageWebsiteProvider).state;
+
     return Stack(
       children: [
         SnackWebView(
-          websiteProvider: detailPageWebsiteProvider,
+          website: website,
+          onChangeWebsite: (url) {
+            ref.read(detailPageWebsiteProvider).state = url;
+          },
         )
       ],
     );

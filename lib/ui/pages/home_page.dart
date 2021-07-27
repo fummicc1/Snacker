@@ -8,6 +8,8 @@ import 'package:snacker/ui/pages/search_page.dart';
 import 'package:snacker/ui/providers/add_snack_provider.dart';
 import 'package:snacker/ui/providers/app_bar_index_provider.dart';
 import 'package:snacker/ui/providers/search_website_provider.dart';
+import 'package:snacker/ui/providers/tab_controller_index_provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const appBarShape = RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)));
@@ -20,7 +22,6 @@ final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
       tabs: [
         Tab(text: "未読"),
         Tab(text: "読了済み"),
-        Tab(text: "最近"),
       ],
       labelColor: Theme.of(context).primaryColorLight,
       unselectedLabelColor: Theme.of(context).primaryColorLight,
@@ -51,18 +52,21 @@ final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
                           return AddSnackPage();
                         }));
                   },
-                  icon: Icon(Icons.add))
+                  icon: Icon(Icons.add)),
+              IconButton(
+                onPressed: () {
+                  final currentWebsite =
+                      ref.read(searchingWebsiteProvider).state;
+                  launch(currentWebsite);
+                },
+                icon: Icon(Icons.open_in_browser_rounded),
+              ),
             ],
           ),
           AppBar(
             title: const Text("一覧"),
             shape: appBarShape,
             bottom: tabBar(context, ref, tabController),
-          ),
-          AppBar(
-            title: const Text("ユーザー"),
-            shape: appBarShape,
-            actions: [],
           ),
         ];
 
@@ -72,7 +76,14 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     int appBarIndex = ref.watch(appBarIndexProvider).state;
-    _tabController = useTabController(initialLength: 3);
+
+    _tabController = useTabController(initialLength: 2);
+
+    if (!_tabController.hasListeners) {
+      _tabController.addListener(() {
+        ref.read(tabControllerIndexProvider).state = _tabController.index;
+      });
+    }
 
     return Scaffold(
       appBar: appBarList(context, ref, _tabController)[appBarIndex],
@@ -81,16 +92,15 @@ class HomePage extends HookConsumerWidget {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.search), label: "検索"),
           BottomNavigationBarItem(icon: Icon(Icons.list), label: "一覧"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "ユーザー"),
         ],
         currentIndex: appBarIndex,
         onTap: (index) {
-          ref.watch(appBarIndexProvider).state = index;
+          ref.read(appBarIndexProvider).state = index;
         },
       ),
       body: DefaultTabController(
         child: buildBody(ref),
-        length: 3,
+        length: 2,
       ),
     );
   }
@@ -100,7 +110,7 @@ class HomePage extends HookConsumerWidget {
     if (index == 0) {
       return SearchPage();
     } else if (index == 1) {
-      return ListPage(tabController: _tabController);
+      return ListPage();
     } else {
       return Container();
     }

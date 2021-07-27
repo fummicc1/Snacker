@@ -15,8 +15,8 @@ class UpdateSnackUseCaseImpl with UpdateSnackUseCase {
   @override
   Future execute({required Snack newSnack}) async {
     await _snackRepository.updateSnack(newSnack: newSnack);
-    await _fetchSnackUsecase.executeList();
-    await _fetchSnackUsecase.executeUnreadSnackList();
-    await _fetchSnackUsecase.executeArchivedSnackList();
+    await _fetchSnackUsecase.executeList().catchError((_) => [].cast<Snack>());
+    await _fetchSnackUsecase.executeUnreadSnackList().catchError((_) => [].cast<Snack>());
+    await _fetchSnackUsecase.executeArchivedSnackList().catchError((_) => [].cast<Snack>());
   }
 }
