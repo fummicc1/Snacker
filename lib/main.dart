@@ -17,6 +17,7 @@ class MyApp extends HookConsumerWidget {
 
     return MaterialApp(
       title: 'Snacker',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
           primarySwatch: MaterialColor(primaryColor.value, {
             50: const Color(0xFFEDEAE8),

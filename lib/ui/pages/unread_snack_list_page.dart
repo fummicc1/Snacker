@@ -15,7 +15,7 @@ class UnReadSnackListPage extends HookConsumerWidget {
 
     return unReadSnackList.when(
         data: (snackList) =>
-            buildContentView(context, ref, snackList: snackList),
+            snackList.isEmpty ? buildEmptyView(context, ref) : buildContentView(context, ref, snackList: snackList),
         loading: () => buildEmptyView(context, ref),
         error: (error, _) => buildEmptyView(context, ref));
   }

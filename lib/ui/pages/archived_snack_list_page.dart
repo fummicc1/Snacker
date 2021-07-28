@@ -11,6 +11,9 @@ class ArchivedSnackListPage extends HookConsumerWidget {
     final archivedSnackList = ref.watch(archivedSnackListProvider);
     return archivedSnackList.when(
         data: (snackList) {
+          if (snackList.isEmpty) {
+            return buildEmptyView(context, ref);
+          }
           return ListView.builder(
               itemCount: snackList.length,
               itemBuilder: (context, index) {
