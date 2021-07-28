@@ -8,7 +8,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:snacker/database.dart';
 import 'package:snacker/domains/fake/get_webpage_title_usecase_fake.dart';
 
 import 'package:snacker/main.dart';
@@ -42,6 +41,5 @@ void main() {
     expect(find.text('見つける'), findsNothing);
     expect(find.text('未読'), findsOneWidget);
     expect(find.text('読了済み'), findsOneWidget);
-    expect(find.text('最近'), findsOneWidget);
   });
 }
