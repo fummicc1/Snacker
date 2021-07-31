@@ -24,7 +24,6 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   static const maxRequestCountPerMinute = 60;
 
   final SnackRepository _snackRepository;
-  int _requestCountPerMinute = 0;
 
   Stream<List<Snack>> get snackList =>
       _allSnackListController.stream.asBroadcastStream();
@@ -39,28 +38,16 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   StreamController<List<Snack>> _unreadSnackListController = StreamController();
   StreamController<List<Snack>> _archivedSnackListController = StreamController();
 
-  FetchSnackUsecaseImpl(this._snackRepository) {
-    Timer.periodic(Duration(minutes: 1), (timer) {
-      _requestCountPerMinute = 0;
-    });
-  }
+  FetchSnackUsecaseImpl(this._snackRepository);
 
   @override
   Future<List<Snack>> executeList() async {
-    final useCache =
-        _requestCountPerMinute > maxRequestCountPerMinute ? true : false;
-
-    if (useCache) {
-      return snackList.last;
-    }
 
     final list = await _snackRepository
         .getAllSnack()
         .catchError((_) => [].cast<Snack>());
 
     _allSnackListController.add(list);
-
-    _requestCountPerMinute++;
 
     return list;
   }
@@ -72,12 +59,6 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
   @override
   Future<List<Snack>> executeArchivedSnackList() async {
-    final useCache =
-        _requestCountPerMinute > maxRequestCountPerMinute ? true : false;
-
-    if (useCache) {
-      return archivedSnackList.last;
-    }
 
     final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "1");
 
@@ -86,19 +67,11 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
     _archivedSnackListController.add(snackList);
 
-    _requestCountPerMinute++;
-
     return snackList;
   }
 
   @override
   Future<List<Snack>> executeUnreadSnackList() async {
-    final useCache =
-        _requestCountPerMinute > maxRequestCountPerMinute ? true : false;
-
-    if (useCache) {
-      return unreadSnackList.last;
-    }
 
     final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "0");
 
@@ -106,8 +79,6 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
         queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
 
     _unreadSnackListController.add(snackList);
-
-    _requestCountPerMinute++;
 
     return snackList;
   }

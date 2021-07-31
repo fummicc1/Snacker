@@ -23,7 +23,7 @@ final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
         Tab(text: "未読"),
         Tab(text: "読了済み"),
       ],
-      labelColor: Theme.of(context).primaryColorLight,
+      labelColor: Colors.white,
       unselectedLabelColor: Theme.of(context).primaryColorLight,
       controller: controller,
     );

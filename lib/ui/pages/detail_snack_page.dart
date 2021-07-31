@@ -4,6 +4,7 @@ import 'package:snacker/entities/snack.dart';
 import 'package:snacker/ui/components/snack_webview.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
 import 'package:snacker/ui/providers/search_website_provider.dart';
+import 'package:snacker/ui/providers/should_show_fab_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -13,6 +14,7 @@ class DetailSnackPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final updateSnackUseCase = ref.watch(updateSnackUseCaseProvider);
+    final shouldShowFAB = ref.watch(shouldShowFABProvider).state;
 
     final snack = ref.watch(detailSnackProvider).state;
     final currentWebsite = ref.watch(detailPageWebsiteProvider).state;
@@ -28,12 +30,20 @@ class DetailSnackPage extends HookConsumerWidget {
         actions: [
           IconButton(
               onPressed: () {
+                ref.read(shouldShowFABProvider).state = !shouldShowFAB;
+              },
+              icon: Icon(
+                Icons.remove_red_eye_rounded,
+                color: Colors.white.withAlpha(shouldShowFAB ? 255 : 100),
+              )),
+          IconButton(
+              onPressed: () {
                 launch(currentWebsite);
               },
               icon: Icon(Icons.open_in_browser_rounded)),
         ],
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: shouldShowFAB ? FloatingActionButton.extended(
         label: buildFABLabel(snack: snack),
         icon: buildFABIcon(snack: snack),
         onPressed: () async {
@@ -43,15 +53,16 @@ class DetailSnackPage extends HookConsumerWidget {
             ref.read(detailSnackProvider).state = snack;
           } catch (e) {
             assert(false, e.toString());
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("エラーが発生しました")));
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text("エラーが発生しました")));
           }
         },
-      ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  Widget buildFABIcon({ required Snack snack }) {
+  Widget buildFABIcon({required Snack snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
       return Icon(Icons.check_box);
@@ -60,7 +71,7 @@ class DetailSnackPage extends HookConsumerWidget {
     }
   }
 
-  Widget buildFABLabel({ required Snack snack }) {
+  Widget buildFABLabel({required Snack snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
       return Text("アーカイブ済み");
@@ -70,7 +81,6 @@ class DetailSnackPage extends HookConsumerWidget {
   }
 
   Widget buildBody(BuildContext context, WidgetRef ref) {
-
     final website = ref.watch(detailPageWebsiteProvider).state;
 
     return Stack(
@@ -80,7 +90,7 @@ class DetailSnackPage extends HookConsumerWidget {
           onChangeWebsite: (url) {
             ref.read(detailPageWebsiteProvider).state = url;
           },
-        )
+        ),
       ],
     );
   }
