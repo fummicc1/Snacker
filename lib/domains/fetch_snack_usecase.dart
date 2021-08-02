@@ -42,27 +42,26 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
       _archivedSnackListController.stream.asBroadcastStream();
 
   StreamController<List<SnackModel>> _allSnackListController =
-      StreamController();
+  StreamController();
   StreamController<List<SnackModel>> _unreadSnackListController =
-      StreamController();
+  StreamController();
   StreamController<List<SnackModel>> _archivedSnackListController =
-      StreamController();
+  StreamController();
 
-  FetchSnackUsecaseImpl(
-      {required this.snackRepository,
-      required this.snackTagRepository,
-      required this.snackTagKindRepository});
+  FetchSnackUsecaseImpl({required this.snackRepository,
+    required this.snackTagRepository,
+    required this.snackTagKindRepository});
 
   @override
   Future<List<SnackModel>> executeList() async {
     final entityList =
-        await snackRepository.getAllSnack().catchError((_) => [].cast<Snack>());
+    await snackRepository.getAllSnack().catchError((_) => [].cast<Snack>());
 
     final modelList = entityList
         .map((snack) {
-          if (snack.id == null) return null;
-          return executeSingle(id: snack.id!);
-        })
+      if (snack.id == null) return null;
+      return executeSingle(id: snack.id!);
+    })
         .whereType<SnackModel>()
         .toList();
 
@@ -73,45 +72,29 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
   @override
   Future<SnackModel> executeSingle({required int id}) async {
-    final snack = await snackRepository.getSnack(id: id);
-    final tagEntityList =
-        await snackTagRepository.getSnackTagListOfSnack(snackId: snack.id);
-    final tags = tagEntityList
-        .map((data) => SnackTagModel(id: data.item1.id, name: data.item2))
-        .toList();
-    final snackModel = SnackModel(
-        title: snack.title,
-        url: snack.url,
-        thumbnailUrl: snack.thumbnailUrl,
-        priority: snack.priority,
-        isArchived: snack.isArchived,
-        tagList: tags);
-    return snackModel;
+    try {
+      final snack = await snackRepository.getSnack(id: id);
+      final tagEntityList =
+      await snackTagRepository.getSnackTagListOfSnack(snackId: snack.id);
+      final tags = tagEntityList
+          .map((data) => SnackTagModel(id: data.item1.id, name: data.item2))
+          .toList();
+      final snackModel = SnackModel(
+          title: snack.title,
+          url: snack.url,
+          thumbnailUrl: snack.thumbnailUrl,
+          priority: snack.priority,
+          isArchived: snack.isArchived,
+          tagList: tags);
+      return snackModel;
+    } catch (e) {
+      return Future.error(e);
+    }
   }
 
   @override
   Future<List<SnackModel>> executeArchivedSnackList() async {
     final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "1");
-
-    final List<Snack> snackList = await snackRepository.getSnackWithQuery(
-        queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
-
-    final models = snackList
-        .map((snack) {
-          if (snack.id == null) return null;
-          return executeSingle(id: snack.id!);
-        })
-        .whereType<SnackModel>()
-        .toList();
-
-    _archivedSnackListController.add(models);
-
-    return models;
-  }
-
-  @override
-  Future<List<SnackModel>> executeUnreadSnackList() async {
-    final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "0");
 
     final List<Snack> snackList = await snackRepository.getSnackWithQuery(
         queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
@@ -127,5 +110,27 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
     _archivedSnackListController.add(models);
 
     return models;
+  }
+
+  @override
+  Future<List<SnackModel>> executeUnreadSnackList() async {
+    final isArchivedQuery = EqualQueryModel(field: "is_archived", value: "0");
+
+    final List<Snack> snackList = await snackRepository.getSnackWithQuery(
+        queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
+
+    final futureModels = snackList
+        .map((snack) async {
+      if (snack.id == null) return null;
+      return await executeSingle(id: snack.id!);
+    });
+
+    final models = await Future.wait(futureModels);
+
+    final ret = models.whereType<SnackModel>().toList();
+
+    _unreadSnackListController.add(ret);
+
+    return ret;
   }
 }

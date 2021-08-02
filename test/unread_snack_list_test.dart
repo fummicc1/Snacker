@@ -20,6 +20,7 @@ import 'package:snacker/ui/pages/detail_snack_page.dart';
 import 'package:snacker/ui/pages/unread_snack_list_page.dart';
 import 'package:snacker/ui/providers/add_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
+import 'package:snacker/ui/providers/fetch_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/get_webpage_title_usecase_provider.dart';
 import 'package:snacker/ui/providers/snack_repository_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
@@ -58,7 +59,8 @@ main() {
           .overrideWithProvider(Provider((ref) => fakeSnackRepository)),
       getWebPageTitleUseCaseProvider.overrideWithProvider(
           Provider((ref) => GetWebPageTitleUseCaseFake())),
-      addSnackUseCaseProvider.overrideWithValue(addSnackUseCase)
+      addSnackUseCaseProvider.overrideWithValue(addSnackUseCase),
+      fetchSnackUsecaseProvider.overrideWithValue(fetchSnackUseCase)
     ], child: MyApp()));
 
     // Move to list page

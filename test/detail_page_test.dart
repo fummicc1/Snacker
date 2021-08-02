@@ -18,6 +18,7 @@ import 'package:snacker/repositories/snack_tag_repository.dart';
 import 'package:snacker/ui/pages/detail_snack_page.dart';
 import 'package:snacker/ui/providers/add_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
+import 'package:snacker/ui/providers/fetch_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/get_webpage_title_usecase_provider.dart';
 import 'package:snacker/ui/providers/snack_repository_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
@@ -81,7 +82,8 @@ main() {
           detailSnackProvider.overrideWithValue(StateController(snack)),
           detailPageWebsiteProvider
               .overrideWithValue(StateController(snack.url)),
-          updateSnackUseCaseProvider.overrideWithValue(updateSnackUseCase)
+          updateSnackUseCaseProvider.overrideWithValue(updateSnackUseCase),
+          fetchSnackUsecaseProvider.overrideWithValue(fetchSnackUseCase)
         ],
         child: MaterialApp(
           home: DetailSnackPage(),

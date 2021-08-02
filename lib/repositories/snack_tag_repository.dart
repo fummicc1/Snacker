@@ -96,7 +96,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   Future<List<Tuple2<SnackTag, SnackTagKindName>>> getSnackTagListOfSnack(
       {required int? snackId}) async {
     final String sql =
-        "SElECT snack_tags, snack_tag_kinds.name, snack_tag_kinds.isActive FROM snack_tags INNER JOIN snack_tag_kinds on snack_tags.snack_id = ?";
+        "SElECT snack_tags.id, snack_tags.tag_id, snack_tags.snack_id, snack_tag_kinds.name, snack_tag_kinds.is_active FROM snack_tags INNER JOIN snack_tag_kinds on snack_tags.snack_id = ?";
     final response =
         await _databaseType.rawQuery(rawQuery: sql, args: [snackId.toString()]);
     return response

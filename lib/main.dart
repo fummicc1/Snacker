@@ -5,9 +5,9 @@ import 'package:snacker/color.dart';
 import 'package:snacker/database.dart';
 import 'package:snacker/ui/pages/home_page.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  database.open();
+  await database.open();
   runApp(ProviderScope(child: MyApp()));
 }
 

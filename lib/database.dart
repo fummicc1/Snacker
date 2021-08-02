@@ -55,7 +55,7 @@ class DatabaseManager implements DatabaseType {
             "CREATE TABLE IF NOT EXISTS snack_tags(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, snack_id INTEGER NOT NULL, tag_id INTEGER NOT NULL)");
         await database.execute(
             "CREATE TABLE IF NOT EXISTS snack_tag_kinds(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, is_active INTEGER NOT NULL)");
-      }, version: 2);
+      }, version: 3);
       _database = database;
       return database;
     } catch (e) {

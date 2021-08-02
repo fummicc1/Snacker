@@ -45,7 +45,7 @@ class AddSnackUseCaseImpl with AddSnackUseCase {
 
       final snackTag = SnackTag(snackId: id, tagId: tagKindId);
 
-      snackTagRepository.createSnackTag(snackTag: snackTag);
+      await snackTagRepository.createSnackTag(snackTag: snackTag);
     }
     
     await fetchSnackUsecase.executeList();
