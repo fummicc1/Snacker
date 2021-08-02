@@ -29,10 +29,9 @@ mixin DatabaseType {
 
   Future<List<Map<String, dynamic>>> readAll({required String tableName});
 
-  Future<List<Map<String, dynamic>>> read(
-      {required String tableName,
-      required String where,
-      required List<String> whereArgs});
+  Future<List<Map<String, dynamic>>> read({required String tableName,
+    required String where,
+    required List<String> whereArgs});
 
   Future<int> delete({required int id, required String tableName});
 }
@@ -44,11 +43,15 @@ class DatabaseManager with DatabaseType {
   Future<Database> open() async {
     try {
       final database =
-          await openDatabase(join(await getDatabasesPath(), "snacker.db"),
-              onCreate: (database, version) {
-        return database.execute(
-            "CREATE TABLE IF NOT EXISTS snacks(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, thumbnail_url TEXT, priority INTEGER NOT NULL, is_archived INTEGER NOT NULL)");
-      }, version: 1);
+      await openDatabase(join(await getDatabasesPath(), "snacker.db"),
+          onCreate: (database, version) async {
+            await database.execute(
+                "CREATE TABLE IF NOT EXISTS snacks(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, title TEXT NOT NULL, url TEXT NOT NULL, thumbnail_url TEXT, priority INTEGER NOT NULL, is_archived INTEGER NOT NULL)");
+            await database.execute(
+                "CREATE TABLE IF NOT EXISTS snack_tags(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, snack_id INTEGER NOT NULL, tag_id INTEGER NOT NULL)");
+            await database.execute(
+                "CREATE TABLE IF NOT EXISTS snack_tag_kinds(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, name TEXT NOT NULL, is_active INTEGER NOT NULL)");
+          }, version: 2);
       _database = database;
       return database;
     } catch (e) {
@@ -79,12 +82,11 @@ class DatabaseManager with DatabaseType {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> read(
-      {required String tableName,
-      required String where,
-      required List<String> whereArgs}) async {
+  Future<List<Map<String, dynamic>>> read({required String tableName,
+    required String where,
+    required List<String> whereArgs}) async {
     final response =
-        await _database.query(tableName, where: where, whereArgs: whereArgs);
+    await _database.query(tableName, where: where, whereArgs: whereArgs);
     if (response.isEmpty) {
       return Future.error("Empty Query Result");
     }
