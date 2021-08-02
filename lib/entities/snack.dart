@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:snacker/models/snack_model.dart';
 
 class Snack {
   int? id;
@@ -46,5 +47,15 @@ class Snack {
         thumbnailUrl: thumbnailUrl,
         priority: priority,
         isArchived: isArchived);
+  }
+
+  factory Snack.fromModel({required SnackModel model}) {
+    return Snack(
+        id: model.id,
+        title: model.title,
+        url: model.url,
+        thumbnailUrl: model.thumbnailUrl,
+        priority: model.priority,
+        isArchived: model.isArchived);
   }
 }

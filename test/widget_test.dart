@@ -11,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/domains/fake/get_webpage_title_usecase_fake.dart';
 
 import 'package:snacker/main.dart';
+import 'package:snacker/repositories/fake/fake_store.dart';
 import 'package:snacker/repositories/fake/snack_repository_fake.dart';
 import 'package:snacker/ui/providers/get_webpage_title_usecase_provider.dart';
 import 'package:snacker/ui/providers/snack_repository_provider.dart';
@@ -22,7 +23,7 @@ void main() {
     // Build our app and trigger a frame.
     await tester.pumpWidget(ProviderScope(overrides: [
       snackRepositoryProvider
-          .overrideWithProvider(Provider((ref) => FakeSnackRepository())),
+          .overrideWithProvider(Provider((ref) => FakeSnackRepository(fakeStore: FakeStore()))),
       getWebPageTitleUseCaseProvider
           .overrideWithProvider(Provider((ref) => GetWebPageTitleUseCaseFake()))
     ], child: MyApp()));

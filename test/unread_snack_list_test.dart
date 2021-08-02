@@ -8,8 +8,13 @@ import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/domains/update_snack_usecase.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/main.dart';
+import 'package:snacker/repositories/fake/fake_store.dart';
 import 'package:snacker/repositories/fake/snack_repository_fake.dart';
+import 'package:snacker/repositories/fake/snack_tag_kind_repository_fake.dart';
+import 'package:snacker/repositories/fake/snack_tag_repository_fake.dart';
 import 'package:snacker/repositories/snack_repository.dart';
+import 'package:snacker/repositories/snack_tag_kind_repository.dart';
+import 'package:snacker/repositories/snack_tag_repository.dart';
 import 'package:snacker/ui/components/snack_list_item.dart';
 import 'package:snacker/ui/pages/detail_snack_page.dart';
 import 'package:snacker/ui/pages/unread_snack_list_page.dart';
@@ -20,20 +25,32 @@ import 'package:snacker/ui/providers/snack_repository_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
 
 main() {
-  SnackRepository fakeSnackRepository = FakeSnackRepository();
+
+  FakeStore fakeStore = FakeStore();
+  SnackRepository fakeSnackRepository = FakeSnackRepository(fakeStore: fakeStore);
+  SnackTagRepository fakeSnackTagRepository = FakeSnackTagRepository(fakeStore: fakeStore);
+  SnackTagKindRepository fakeSnackTagKindRepository =
+  FakeSnackTagKindRepository(fakeStore: fakeStore);
 
   tearDown(() {
-    fakeSnackRepository = FakeSnackRepository();
+    fakeSnackRepository = FakeSnackRepository(fakeStore: fakeStore);
+    fakeSnackTagRepository = FakeSnackTagRepository(fakeStore: fakeStore);
+    fakeSnackTagKindRepository = FakeSnackTagKindRepository(fakeStore: fakeStore);
   });
 
   testWidgets("Unread Snack List Addition", (WidgetTester tester) async {
     TestWidgetsFlutterBinding.ensureInitialized();
 
-    FetchSnackUsecase fetchSnackUseCase =
-        FetchSnackUsecaseImpl(fakeSnackRepository);
+    FetchSnackUsecase fetchSnackUseCase = FetchSnackUsecaseImpl(
+        snackRepository: fakeSnackRepository,
+        snackTagRepository: fakeSnackTagRepository,
+        snackTagKindRepository: fakeSnackTagKindRepository);
 
-    AddSnackUseCase addSnackUseCase =
-        AddSnackUseCaseImpl(fakeSnackRepository, fetchSnackUseCase);
+    AddSnackUseCase addSnackUseCase = AddSnackUseCaseImpl(
+        snackRepository: fakeSnackRepository,
+        fetchSnackUsecase: fetchSnackUseCase,
+        snackTagRepository: fakeSnackTagRepository,
+        snackTagKindRepository: fakeSnackTagKindRepository);
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(ProviderScope(overrides: [
@@ -55,7 +72,10 @@ main() {
     expect(find.byType(SnackListItem), findsNothing);
 
     await addSnackUseCase.execute(
-        url: "https://github.com/fummicc1", title: "fummicc1", priority: 4);
+        url: "https://github.com/fummicc1",
+        title: "fummicc1",
+        priority: 4,
+        tagNameList: ["github"]);
 
     await tester.runAsync(() async {
       await tester.pump();

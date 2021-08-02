@@ -12,9 +12,8 @@ class AddSnackPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final provider = ref.watch(addSnackProvider);
-    final snack = provider.snack;
-    final titleController = useTextEditingController(text: snack.title);
-    final urlController = useTextEditingController(text: snack.url);
+    final titleController = useTextEditingController(text: provider.title);
+    final urlController = useTextEditingController(text: provider.url);
 
     return Scaffold(
       appBar: AppBar(
@@ -61,7 +60,7 @@ class AddSnackPage extends HookConsumerWidget {
                           scrollDirection: Axis.horizontal,
                           itemCount: 5,
                           itemBuilder: (context, index) {
-                            if (index + 1 <= snack.priority) {
+                            if (index + 1 <= provider.priority) {
                               return IconButton(
                                   onPressed: () {
                                     provider.updatePriority(index + 1);

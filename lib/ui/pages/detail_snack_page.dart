@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/entities/snack.dart';
+import 'package:snacker/models/snack_model.dart';
 import 'package:snacker/ui/components/snack_webview.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
 import 'package:snacker/ui/providers/search_website_provider.dart';
@@ -62,7 +63,7 @@ class DetailSnackPage extends HookConsumerWidget {
     );
   }
 
-  Widget buildFABIcon({required Snack snack}) {
+  Widget buildFABIcon({required SnackModel snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
       return Icon(Icons.check_box);
@@ -71,7 +72,7 @@ class DetailSnackPage extends HookConsumerWidget {
     }
   }
 
-  Widget buildFABLabel({required Snack snack}) {
+  Widget buildFABLabel({required SnackModel snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
       return Text("アーカイブ済み");

@@ -1,8 +1,11 @@
-
 import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/entities/snack_tag.dart';
 import 'package:snacker/entities/snack_tag_kind.dart';
+import 'package:snacker/models/snack_tag_model.dart';
+import 'package:tuple/tuple.dart';
+
+typedef SnackTagKindName = String;
 
 mixin SnackTagRepository {
   Future<int> createSnackTag({required SnackTag snackTag});
@@ -13,7 +16,11 @@ mixin SnackTagRepository {
 
   Future<List<SnackTag>> getAllSnackTag();
 
-  Future<List<SnackTag>> getSnackTagWithQuery({required List<EqualQueryModel> queries});
+  Future<List<SnackTag>> getSnackTagWithQuery(
+      {required List<EqualQueryModel> queries});
+
+  Future<List<Tuple2<SnackTag, SnackTagKindName>>> getSnackTagListOfSnack(
+      {required int? snackId});
 
   Future deleteSnackTag({required int id});
 }
@@ -38,7 +45,8 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   Future<List<SnackTag>> getAllSnackTag() async {
     try {
       final response = await _databaseType.readAll(tableName: Snack.tableName);
-      final list = response.map((map) => SnackTagKind.fromMap(map: map))
+      final list = response
+          .map((map) => SnackTagKind.fromMap(map: map))
           .toList()
           .cast<SnackTag>();
       return list;
@@ -49,8 +57,8 @@ class SnackTagRepositoryImpl with SnackTagRepository {
 
   @override
   Future<SnackTag> getSnackTag({required int id}) async {
-    final response = await _databaseType.read(
-        tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+    final response = await _databaseType
+        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -58,8 +66,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   }
 
   @override
-  Future updateSnackTag(
-      {required SnackTag newSnackTag}) async {
+  Future updateSnackTag({required SnackTag newSnackTag}) async {
     return _databaseType.update(
         data: newSnackTag.toMap(), tableName: Snack.tableName);
   }
@@ -83,5 +90,22 @@ class SnackTagRepositoryImpl with SnackTagRepository {
     } catch (e) {
       return Future.error(e);
     }
+  }
+
+  @override
+  Future<List<Tuple2<SnackTag, SnackTagKindName>>> getSnackTagListOfSnack(
+      {required int? snackId}) async {
+    final String sql =
+        "SElECT snack_tags, snack_tag_kinds.name, snack_tag_kinds.isActive FROM snack_tags INNER JOIN snack_tag_kinds on snack_tags.snack_id = ?";
+    final response =
+        await _databaseType.rawQuery(rawQuery: sql, args: [snackId.toString()]);
+    return response
+        .map((map) {
+          final snackTag = SnackTag.fromMap(map: map);
+          final name = map["name"] as SnackTagKindName;
+          return Tuple2(snackTag, name);
+        })
+        .toList()
+        .cast<Tuple2<SnackTag, SnackTagKindName>>();
   }
 }
