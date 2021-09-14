@@ -1,4 +1,3 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/entities/snack_tag.dart';
@@ -40,14 +39,16 @@ class AddSnackUseCaseImpl with AddSnackUseCase {
     final id = await snackRepository.createSnack(snack: snack);
 
     for (String tagName in tagNameList) {
-      final SnackTagKind snackTagKind = SnackTagKind(name: tagName, isActive: true);
-      final tagKindId = await snackTagKindRepository.createSnackTagKind(snackTagKind: snackTagKind);
+      final SnackTagKind snackTagKind =
+          SnackTagKind(name: tagName, isActive: true);
+      final tagKindId = await snackTagKindRepository.createSnackTagKind(
+          snackTagKind: snackTagKind);
 
       final snackTag = SnackTag(snackId: id, tagId: tagKindId);
 
       await snackTagRepository.createSnackTag(snackTag: snackTag);
     }
-    
+
     await fetchSnackUsecase.executeList();
     await fetchSnackUsecase.executeUnreadSnackList();
     await fetchSnackUsecase.executeArchivedSnackList();

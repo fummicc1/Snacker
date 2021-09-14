@@ -4,7 +4,6 @@ import 'package:snacker/repositories/fake/fake_store.dart';
 import 'package:snacker/repositories/snack_tag_kind_repository.dart';
 
 class FakeSnackTagKindRepository with SnackTagKindRepository {
-
   final FakeStore fakeStore;
 
   FakeSnackTagKindRepository({required this.fakeStore});
@@ -29,7 +28,9 @@ class FakeSnackTagKindRepository with SnackTagKindRepository {
 
   @override
   Future<SnackTagKind> getSnackTagKind({required int id}) async {
-    return fakeStore.snackTagKindList.where((element) => element.id == id).first;
+    return fakeStore.snackTagKindList
+        .where((element) => element.id == id)
+        .first;
   }
 
   @override
@@ -40,8 +41,8 @@ class FakeSnackTagKindRepository with SnackTagKindRepository {
 
   @override
   Future updateSnackTagKind({required SnackTagKind newSnackTagKind}) async {
-    final index =
-        fakeStore.snackTagKindList.indexWhere((element) => element.id == newSnackTagKind.id);
+    final index = fakeStore.snackTagKindList
+        .indexWhere((element) => element.id == newSnackTagKind.id);
     fakeStore.snackTagKindList[index] = newSnackTagKind;
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:snacker/models/snack_model.dart';
 
 class Snack {

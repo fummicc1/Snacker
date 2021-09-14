@@ -12,8 +12,9 @@ mixin SnackRepository {
 
   Future<List<Snack>> getAllSnack();
 
-  Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries});
-  
+  Future<List<Snack>> getSnackWithQuery(
+      {required List<EqualQueryModel> queries});
+
   Future deleteSnack({required int id});
 }
 
@@ -24,7 +25,8 @@ class SnackRepositoryImpl with SnackRepository {
 
   @override
   Future<int> createSnack({required Snack snack}) {
-    return _databaseType.create(data: snack.toMap(), tableName: Snack.tableName);
+    return _databaseType.create(
+        data: snack.toMap(), tableName: Snack.tableName);
   }
 
   @override
@@ -34,10 +36,10 @@ class SnackRepositoryImpl with SnackRepository {
 
   @override
   Future<List<Snack>> getAllSnack() async {
-
     try {
       final response = await _databaseType.readAll(tableName: Snack.tableName);
-      final snackList = response.map((map) => Snack.fromMap(map: map)).toList().cast<Snack>();
+      final snackList =
+          response.map((map) => Snack.fromMap(map: map)).toList().cast<Snack>();
       return snackList;
     } catch (e) {
       return Future.error(e);
@@ -46,7 +48,8 @@ class SnackRepositoryImpl with SnackRepository {
 
   @override
   Future<Snack> getSnack({required int id}) async {
-    final response = await _databaseType.read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+    final response = await _databaseType
+        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -55,12 +58,13 @@ class SnackRepositoryImpl with SnackRepository {
 
   @override
   Future updateSnack({required Snack newSnack}) async {
-    return _databaseType.update(data: newSnack.toMap(), tableName: Snack.tableName);
+    return _databaseType.update(
+        data: newSnack.toMap(), tableName: Snack.tableName);
   }
 
   @override
-  Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries}) async {
-
+  Future<List<Snack>> getSnackWithQuery(
+      {required List<EqualQueryModel> queries}) async {
     String where = "";
     List<String> args = [];
 
@@ -71,7 +75,8 @@ class SnackRepositoryImpl with SnackRepository {
     }
 
     try {
-      final response = await _databaseType.read(tableName: Snack.tableName, where: where, whereArgs: args);
+      final response = await _databaseType.read(
+          tableName: Snack.tableName, where: where, whereArgs: args);
       return response.map((res) => Snack.fromMap(map: res)).toList();
     } catch (e) {
       return Future.error(e);

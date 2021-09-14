@@ -1,4 +1,3 @@
-
 import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/entities/snack_tag_kind.dart';
@@ -12,7 +11,8 @@ mixin SnackTagKindRepository {
 
   Future<List<SnackTagKind>> getAllSnackTagKind();
 
-  Future<List<SnackTagKind>> getSnackTagKindWithQuery({required List<EqualQueryModel> queries});
+  Future<List<SnackTagKind>> getSnackTagKindWithQuery(
+      {required List<EqualQueryModel> queries});
 
   Future deleteSnackTagKind({required int id});
 }
@@ -37,7 +37,8 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
   Future<List<SnackTagKind>> getAllSnackTagKind() async {
     try {
       final response = await _databaseType.readAll(tableName: Snack.tableName);
-      final list = response.map((map) => SnackTagKind.fromMap(map: map))
+      final list = response
+          .map((map) => SnackTagKind.fromMap(map: map))
           .toList()
           .cast<SnackTagKind>();
       return list;
@@ -48,8 +49,8 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
 
   @override
   Future<SnackTagKind> getSnackTagKind({required int id}) async {
-    final response = await _databaseType.read(
-        tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+    final response = await _databaseType
+        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -57,8 +58,7 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
   }
 
   @override
-  Future updateSnackTagKind(
-      {required SnackTagKind newSnackTagKind}) async {
+  Future updateSnackTagKind({required SnackTagKind newSnackTagKind}) async {
     return _databaseType.update(
         data: newSnackTagKind.toMap(), tableName: Snack.tableName);
   }

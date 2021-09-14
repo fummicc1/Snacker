@@ -14,12 +14,11 @@ import 'package:url_launcher/url_launcher.dart';
 const appBarShape = RoundedRectangleBorder(
     borderRadius: BorderRadius.vertical(bottom: Radius.circular(8)));
 
-final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
-    tabBar = (context, ref, controller) {
+tabBar(context, ref, controller) {
   final appBarIndex = ref.watch(appBarIndexProvider).state;
   if (appBarIndex == 1) {
     return TabBar(
-      tabs: [
+      tabs: const [
         Tab(text: "未読"),
         Tab(text: "読了済み"),
       ],
@@ -28,50 +27,49 @@ final PreferredSizeWidget Function(BuildContext, WidgetRef, TabController)
       controller: controller,
     );
   } else {
-    return TabBar(tabs: [], controller: controller);
+    return TabBar(tabs: const [], controller: controller);
   }
-};
+}
 
-final List<AppBar> Function(BuildContext, WidgetRef, TabController) appBarList =
-    (context, ref, tabController) => [
-          AppBar(
-            title: const Text("見つける"),
-            shape: appBarShape,
-            actions: [
-              IconButton(
-                  onPressed: () async {
-                    final currentWebsite =
-                        ref.read(searchingWebsiteProvider).state;
-                    final provider = ref.watch(addSnackProvider);
-                    await provider
-                        .updateUrl(currentWebsite, shouldScraping: true)
-                        .catchError((_) => "");
-                    Navigator.of(context).push(MaterialPageRoute(
-                        settings: const RouteSettings(name: "add_snack"),
-                        builder: (context) {
-                          return AddSnackPage();
-                        }));
-                  },
-                  icon: Icon(Icons.add)),
-              IconButton(
-                onPressed: () {
-                  final currentWebsite =
-                      ref.read(searchingWebsiteProvider).state;
-                  launch(currentWebsite);
-                },
-                icon: Icon(Icons.open_in_browser_rounded),
-              ),
-            ],
+appBarList(context, ref, tabController) => [
+      AppBar(
+        title: const Text("見つける"),
+        shape: appBarShape,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                final currentWebsite = ref.read(searchingWebsiteProvider).state;
+                final provider = ref.watch(addSnackProvider);
+                await provider
+                    .updateUrl(currentWebsite, shouldScraping: true)
+                    .catchError((_) => "");
+                Navigator.of(context).push(MaterialPageRoute(
+                    settings: const RouteSettings(name: "add_snack"),
+                    builder: (context) {
+                      return const AddSnackPage();
+                    }));
+              },
+              icon: const Icon(Icons.add)),
+          IconButton(
+            onPressed: () {
+              final currentWebsite = ref.read(searchingWebsiteProvider).state;
+              launch(currentWebsite);
+            },
+            icon: const Icon(Icons.open_in_browser_rounded),
           ),
-          AppBar(
-            title: const Text("一覧"),
-            shape: appBarShape,
-            bottom: tabBar(context, ref, tabController),
-          ),
-        ];
+        ],
+      ),
+      AppBar(
+        title: const Text("一覧"),
+        shape: appBarShape,
+        bottom: tabBar(context, ref, tabController),
+      ),
+    ];
 
 class HomePage extends HookConsumerWidget {
   late TabController _tabController;
+
+  HomePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +108,7 @@ class HomePage extends HookConsumerWidget {
     if (index == 0) {
       return SearchPage();
     } else if (index == 1) {
-      return ListPage();
+      return const ListPage();
     } else {
       return Container();
     }

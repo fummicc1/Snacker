@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/domains/add_snack_usecase.dart';
 import 'package:snacker/domains/get_web_page_title_usecase.dart';
-import 'package:snacker/models/snack_model.dart';
 import 'package:snacker/ui/providers/add_snack_usecase_provider.dart';
 import 'package:snacker/ui/providers/get_webpage_title_usecase_provider.dart';
 

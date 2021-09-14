@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:snacker/entities/snack.dart';
 import 'package:snacker/models/snack_model.dart';
 import 'package:snacker/ui/components/snack_webview.dart';
 import 'package:snacker/ui/providers/detail_snack_provider.dart';
-import 'package:snacker/ui/providers/search_website_provider.dart';
 import 'package:snacker/ui/providers/should_show_fab_provider.dart';
 import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -41,24 +39,26 @@ class DetailSnackPage extends HookConsumerWidget {
               onPressed: () {
                 launch(currentWebsite);
               },
-              icon: Icon(Icons.open_in_browser_rounded)),
+              icon: const Icon(Icons.open_in_browser_rounded)),
         ],
       ),
-      floatingActionButton: shouldShowFAB ? FloatingActionButton.extended(
-        label: buildFABLabel(snack: snack),
-        icon: buildFABIcon(snack: snack),
-        onPressed: () async {
-          snack.isArchived = !snack.isArchived;
-          try {
-            await updateSnackUseCase.execute(newSnack: snack);
-            ref.read(detailSnackProvider).state = snack;
-          } catch (e) {
-            assert(false, e.toString());
-            ScaffoldMessenger.of(context)
-                .showSnackBar(SnackBar(content: Text("エラーが発生しました")));
-          }
-        },
-      ) : null,
+      floatingActionButton: shouldShowFAB
+          ? FloatingActionButton.extended(
+              label: buildFABLabel(snack: snack),
+              icon: buildFABIcon(snack: snack),
+              onPressed: () async {
+                snack.isArchived = !snack.isArchived;
+                try {
+                  await updateSnackUseCase.execute(newSnack: snack);
+                  ref.read(detailSnackProvider).state = snack;
+                } catch (e) {
+                  assert(false, e.toString());
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(const SnackBar(content: Text("エラーが発生しました")));
+                }
+              },
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
@@ -66,18 +66,18 @@ class DetailSnackPage extends HookConsumerWidget {
   Widget buildFABIcon({required SnackModel snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
-      return Icon(Icons.check_box);
+      return const Icon(Icons.check_box);
     } else {
-      return Icon(Icons.check_box_outline_blank);
+      return const Icon(Icons.check_box_outline_blank);
     }
   }
 
   Widget buildFABLabel({required SnackModel snack}) {
     final isArchived = snack.isArchived;
     if (isArchived) {
-      return Text("アーカイブ済み");
+      return const Text("アーカイブ済み");
     } else {
-      return Text("未読");
+      return const Text("未読");
     }
   }
 

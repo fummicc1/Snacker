@@ -12,18 +12,17 @@ class ListEmptyStateView extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Spacer(),
-            Text(message,
-                style: Theme.of(context).textTheme.bodyText1),
-            SizedBox(
+            const Spacer(),
+            Text(message, style: Theme.of(context).textTheme.bodyText1),
+            const SizedBox(
               height: 32,
             ),
-            Container(
+            const SizedBox(
               height: 48,
               width: 48,
               child: Image(image: AssetImage("assets/images/icon.png")),
             ),
-            Spacer(),
+            const Spacer(),
           ],
         ),
       ),

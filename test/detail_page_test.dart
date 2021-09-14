@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -6,7 +5,6 @@ import 'package:snacker/domains/add_snack_usecase.dart';
 import 'package:snacker/domains/fake/get_webpage_title_usecase_fake.dart';
 import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/domains/update_snack_usecase.dart';
-import 'package:snacker/entities/snack.dart';
 import 'package:snacker/models/snack_model.dart';
 import 'package:snacker/repositories/fake/fake_store.dart';
 import 'package:snacker/repositories/fake/snack_repository_fake.dart';
@@ -25,15 +23,18 @@ import 'package:snacker/ui/providers/update_snack_usecase_provider.dart';
 
 main() {
   FakeStore fakeStore = FakeStore();
-  SnackRepository fakeSnackRepository = FakeSnackRepository(fakeStore: fakeStore);
-  SnackTagRepository fakeSnackTagRepository = FakeSnackTagRepository(fakeStore: fakeStore);
+  SnackRepository fakeSnackRepository =
+      FakeSnackRepository(fakeStore: fakeStore);
+  SnackTagRepository fakeSnackTagRepository =
+      FakeSnackTagRepository(fakeStore: fakeStore);
   SnackTagKindRepository fakeSnackTagKindRepository =
       FakeSnackTagKindRepository(fakeStore: fakeStore);
 
   tearDown(() {
     fakeSnackRepository = FakeSnackRepository(fakeStore: fakeStore);
     fakeSnackTagRepository = FakeSnackTagRepository(fakeStore: fakeStore);
-    fakeSnackTagKindRepository = FakeSnackTagKindRepository(fakeStore: fakeStore);
+    fakeSnackTagKindRepository =
+        FakeSnackTagKindRepository(fakeStore: fakeStore);
   });
 
   testWidgets("Change isArchived State", (tester) async {
@@ -85,7 +86,7 @@ main() {
           updateSnackUseCaseProvider.overrideWithValue(updateSnackUseCase),
           fetchSnackUsecaseProvider.overrideWithValue(fetchSnackUseCase)
         ],
-        child: MaterialApp(
+        child: const MaterialApp(
           home: DetailSnackPage(),
         )));
 

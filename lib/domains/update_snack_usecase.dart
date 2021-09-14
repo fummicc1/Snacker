@@ -1,6 +1,5 @@
 import 'package:snacker/domains/fetch_snack_usecase.dart';
 import 'package:snacker/entities/snack.dart';
-import 'package:snacker/entities/snack_tag.dart';
 import 'package:snacker/models/snack_model.dart';
 import 'package:snacker/repositories/snack_repository.dart';
 import 'package:snacker/repositories/snack_tag_kind_repository.dart';
@@ -11,10 +10,11 @@ mixin UpdateSnackUseCase {
 }
 
 class UpdateSnackUseCaseImpl with UpdateSnackUseCase {
-  UpdateSnackUseCaseImpl({required this.snackRepository,
-    required this.snackTagRepository,
-    required this.snackTagKindRepository,
-    required this.fetchSnackUsecase});
+  UpdateSnackUseCaseImpl(
+      {required this.snackRepository,
+      required this.snackTagRepository,
+      required this.snackTagKindRepository,
+      required this.fetchSnackUsecase});
 
   final SnackRepository snackRepository;
   final FetchSnackUsecase fetchSnackUsecase;
@@ -39,8 +39,9 @@ class UpdateSnackUseCaseImpl with UpdateSnackUseCase {
       }
     }
 
-    await fetchSnackUsecase.executeList().catchError((_) =>
-        [].cast<SnackModel>());
+    await fetchSnackUsecase
+        .executeList()
+        .catchError((_) => [].cast<SnackModel>());
     await fetchSnackUsecase
         .executeUnreadSnackList()
         .catchError((_) => [].cast<SnackModel>());

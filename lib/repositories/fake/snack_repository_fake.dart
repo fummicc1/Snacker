@@ -4,7 +4,6 @@ import 'package:snacker/repositories/fake/fake_store.dart';
 import 'package:snacker/repositories/snack_repository.dart';
 
 class FakeSnackRepository with SnackRepository {
-
   final FakeStore fakeStore;
 
   FakeSnackRepository({required this.fakeStore});
@@ -19,7 +18,8 @@ class FakeSnackRepository with SnackRepository {
 
   @override
   Future deleteSnack({required int id}) async {
-    final targetIndex = fakeStore.snackList.indexWhere((element) => element.id == id);
+    final targetIndex =
+        fakeStore.snackList.indexWhere((element) => element.id == id);
     fakeStore.snackList.removeAt(targetIndex);
   }
 
@@ -33,19 +33,21 @@ class FakeSnackRepository with SnackRepository {
 
   @override
   Future<Snack> getSnack({required int id}) async {
-    final target = fakeStore.snackList.firstWhere((element) => element.id == id);
+    final target =
+        fakeStore.snackList.firstWhere((element) => element.id == id);
     return target;
   }
 
   @override
-  Future<List<Snack>> getSnackWithQuery({required List<EqualQueryModel> queries}) async {
+  Future<List<Snack>> getSnackWithQuery(
+      {required List<EqualQueryModel> queries}) async {
     return fakeStore.snackList;
   }
 
   @override
   Future updateSnack({required Snack newSnack}) async {
-    final index = fakeStore.snackList.indexWhere((element) => element.id == newSnack.id);
+    final index =
+        fakeStore.snackList.indexWhere((element) => element.id == newSnack.id);
     fakeStore.snackList[index] = newSnack;
   }
-
 }

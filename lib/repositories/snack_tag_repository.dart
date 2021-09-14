@@ -2,7 +2,6 @@ import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/entities/snack_tag.dart';
 import 'package:snacker/entities/snack_tag_kind.dart';
-import 'package:snacker/models/snack_tag_model.dart';
 import 'package:tuple/tuple.dart';
 
 typedef SnackTagKindName = String;
@@ -95,7 +94,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   @override
   Future<List<Tuple2<SnackTag, SnackTagKindName>>> getSnackTagListOfSnack(
       {required int? snackId}) async {
-    final String sql =
+    const String sql =
         "SElECT snack_tags.id, snack_tags.tag_id, snack_tags.snack_id, snack_tag_kinds.name, snack_tag_kinds.is_active FROM snack_tags INNER JOIN snack_tag_kinds on snack_tags.snack_id = ?";
     final response =
         await _databaseType.rawQuery(rawQuery: sql, args: [snackId.toString()]);

@@ -5,5 +5,4 @@ class GetWebPageTitleUseCaseFake with GetWebPageTitleUseCase {
   Future<String> execute({required String url}) async {
     return url;
   }
-
 }

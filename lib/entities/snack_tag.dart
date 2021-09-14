@@ -1,6 +1,3 @@
-import 'package:snacker/entities/snack.dart';
-import 'package:snacker/models/snack_tag_model.dart';
-
 class SnackTag {
   int? id;
   int snackId;

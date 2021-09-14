@@ -7,7 +7,6 @@ import 'package:snacker/models/snack_tag_model.dart';
 import 'package:snacker/repositories/snack_repository.dart';
 import 'package:snacker/repositories/snack_tag_kind_repository.dart';
 import 'package:snacker/repositories/snack_tag_repository.dart';
-import 'package:tuple/tuple.dart';
 
 mixin FetchSnackUsecase {
   Stream<List<SnackModel>> get snackList;
@@ -32,36 +31,40 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
   final SnackTagRepository snackTagRepository;
   final SnackTagKindRepository snackTagKindRepository;
 
+  @override
   Stream<List<SnackModel>> get snackList =>
       _allSnackListController.stream.asBroadcastStream();
 
+  @override
   Stream<List<SnackModel>> get unreadSnackList =>
       _unreadSnackListController.stream.asBroadcastStream();
 
+  @override
   Stream<List<SnackModel>> get archivedSnackList =>
       _archivedSnackListController.stream.asBroadcastStream();
 
-  StreamController<List<SnackModel>> _allSnackListController =
-  StreamController();
-  StreamController<List<SnackModel>> _unreadSnackListController =
-  StreamController();
-  StreamController<List<SnackModel>> _archivedSnackListController =
-  StreamController();
+  final StreamController<List<SnackModel>> _allSnackListController =
+      StreamController();
+  final StreamController<List<SnackModel>> _unreadSnackListController =
+      StreamController();
+  final StreamController<List<SnackModel>> _archivedSnackListController =
+      StreamController();
 
-  FetchSnackUsecaseImpl({required this.snackRepository,
-    required this.snackTagRepository,
-    required this.snackTagKindRepository});
+  FetchSnackUsecaseImpl(
+      {required this.snackRepository,
+      required this.snackTagRepository,
+      required this.snackTagKindRepository});
 
   @override
   Future<List<SnackModel>> executeList() async {
     final entityList =
-    await snackRepository.getAllSnack().catchError((_) => [].cast<Snack>());
+        await snackRepository.getAllSnack().catchError((_) => [].cast<Snack>());
 
     final modelList = entityList
         .map((snack) {
-      if (snack.id == null) return null;
-      return executeSingle(id: snack.id!);
-    })
+          if (snack.id == null) return null;
+          return executeSingle(id: snack.id!);
+        })
         .whereType<SnackModel>()
         .toList();
 
@@ -75,7 +78,7 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
     try {
       final snack = await snackRepository.getSnack(id: id);
       final tagEntityList =
-      await snackTagRepository.getSnackTagListOfSnack(snackId: snack.id);
+          await snackTagRepository.getSnackTagListOfSnack(snackId: snack.id);
       final tags = tagEntityList
           .map((data) => SnackTagModel(id: data.item1.id, name: data.item2))
           .toList();
@@ -101,9 +104,9 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
 
     final models = snackList
         .map((snack) {
-      if (snack.id == null) return null;
-      return executeSingle(id: snack.id!);
-    })
+          if (snack.id == null) return null;
+          return executeSingle(id: snack.id!);
+        })
         .whereType<SnackModel>()
         .toList();
 
@@ -119,8 +122,7 @@ class FetchSnackUsecaseImpl with FetchSnackUsecase {
     final List<Snack> snackList = await snackRepository.getSnackWithQuery(
         queries: [isArchivedQuery]).catchError((_) => [].cast<Snack>());
 
-    final futureModels = snackList
-        .map((snack) async {
+    final futureModels = snackList.map((snack) async {
       if (snack.id == null) return null;
       return await executeSingle(id: snack.id!);
     });

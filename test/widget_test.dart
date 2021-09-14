@@ -22,11 +22,11 @@ void main() {
 
     // Build our app and trigger a frame.
     await tester.pumpWidget(ProviderScope(overrides: [
-      snackRepositoryProvider
-          .overrideWithProvider(Provider((ref) => FakeSnackRepository(fakeStore: FakeStore()))),
+      snackRepositoryProvider.overrideWithProvider(
+          Provider((ref) => FakeSnackRepository(fakeStore: FakeStore()))),
       getWebPageTitleUseCaseProvider
           .overrideWithProvider(Provider((ref) => GetWebPageTitleUseCaseFake()))
-    ], child: MyApp()));
+    ], child: const MyApp()));
 
     // Verify that our counter starts at 0.
     expect(find.text('検索'), findsOneWidget);

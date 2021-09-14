@@ -1,8 +1,6 @@
 import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack_tag.dart';
 import 'package:snacker/repositories/fake/fake_store.dart';
-import 'package:snacker/repositories/fake/snack_tag_kind_repository_fake.dart';
-import 'package:snacker/repositories/snack_tag_kind_repository.dart';
 import 'package:snacker/repositories/snack_tag_repository.dart';
 import 'package:tuple/tuple.dart';
 

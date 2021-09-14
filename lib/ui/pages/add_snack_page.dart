@@ -3,11 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/ui/providers/add_snack_provider.dart';
-import 'package:snacker/ui/providers/fetch_snack_usecase_provider.dart';
-import 'package:snacker/ui/providers/un_read_snack_list_provider.dart';
 
 class AddSnackPage extends HookConsumerWidget {
-  AddSnackPage({Key? key}) : super(key: key);
+  const AddSnackPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,37 +22,38 @@ class AddSnackPage extends HookConsumerWidget {
                 await provider.register();
                 Navigator.of(context).pop();
               },
-              icon: Icon(Icons.add))
+              icon: const Icon(Icons.add))
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             TextField(
               controller: urlController,
-              decoration: InputDecoration(labelText: "URL"),
-              onChanged: (url) => provider.updateUrl(url, shouldScraping: false),
+              decoration: const InputDecoration(labelText: "URL"),
+              onChanged: (url) =>
+                  provider.updateUrl(url, shouldScraping: false),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             TextField(
               controller: titleController,
-              decoration: InputDecoration(labelText: "記事のタイトル"),
+              decoration: const InputDecoration(labelText: "記事のタイトル"),
               onChanged: (title) => provider.updateTitle(title),
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
-            Container(
+            SizedBox(
               height: 64,
               child: Row(
                 children: [
-                  Text("優先度"),
+                  const Text("優先度"),
                   Flexible(
                       child: ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -65,13 +64,13 @@ class AddSnackPage extends HookConsumerWidget {
                                   onPressed: () {
                                     provider.updatePriority(index + 1);
                                   },
-                                  icon: Icon(Icons.star, size: 32));
+                                  icon: const Icon(Icons.star, size: 32));
                             } else {
                               return IconButton(
                                   onPressed: () {
                                     provider.updatePriority(index + 1);
                                   },
-                                  icon: Icon(Icons.star_border, size: 32));
+                                  icon: const Icon(Icons.star_border, size: 32));
                             }
                           }))
                 ],

@@ -72,12 +72,12 @@ class SearchPage extends HookConsumerWidget {
                                 color: Theme.of(context).primaryColor,
                                 blurRadius: 2,
                                 spreadRadius: 1,
-                                offset: Offset(0, 2))
+                                offset: const Offset(0, 2))
                           ],
                           color: Theme.of(context).scaffoldBackgroundColor,
                           shape: BoxShape.circle),
                       child: IconButton(
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.arrow_back_ios_new,
                           size: 28,
                         ),

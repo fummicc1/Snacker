@@ -1,5 +1,4 @@
 import 'package:path/path.dart';
-import 'package:snacker/entities/snack.dart';
 import 'package:sqflite/sqflite.dart';
 
 class EqualQueryModel {
@@ -104,7 +103,8 @@ class DatabaseManager implements DatabaseType {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> rawQuery({required String rawQuery, required List<String> args}) {
+  Future<List<Map<String, dynamic>>> rawQuery(
+      {required String rawQuery, required List<String> args}) {
     return _database.rawQuery(rawQuery, args);
   }
 }
