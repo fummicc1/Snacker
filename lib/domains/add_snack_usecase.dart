@@ -34,6 +34,7 @@ class AddSnackUseCaseImpl with AddSnackUseCase {
       String? thumbnailUrl,
       required int priority,
       required List<String> tagNameList}) async {
+    // FIXME: トランザクション処理にしたい
     final Snack snack =
         Snack(title: title, url: url, priority: priority, isArchived: false);
     final id = await snackRepository.createSnack(snack: snack);
