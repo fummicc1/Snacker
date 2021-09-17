@@ -23,7 +23,7 @@ class UpdateSnackUseCaseImpl with UpdateSnackUseCase {
 
   @override
   Future execute({required SnackModel newSnack}) async {
-    final snackEntity = Snack.fromModel(model: newSnack);
+    final snackEntity = Snack.fromMap(map: newSnack.json);
 
     await snackRepository.updateSnack(newSnack: snackEntity);
 
