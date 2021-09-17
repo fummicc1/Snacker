@@ -1,3 +1,7 @@
+import 'package:json_annotation/json_annotation.dart';
+part 'snack_tag.g.dart';
+
+@JsonSerializable()
 class SnackTag {
   int? id;
   int snackId;
@@ -7,13 +11,7 @@ class SnackTag {
 
   SnackTag({this.id, required this.snackId, required this.tagId});
 
-  Map<String, dynamic> toMap() =>
-      {"id": id, "snack_id": snackId, "tag_id": tagId};
+  Map<String, dynamic> toMap() => _$SnackTagToJson(this);
 
-  factory SnackTag.fromMap({required Map<String, dynamic> map}) {
-    var id = map["id"] as int;
-    var snackId = map["snack_id"] as int;
-    var tagId = map["tag_id"] as int;
-    return SnackTag(id: id, snackId: snackId, tagId: tagId);
-  }
+  factory SnackTag.fromMap({required Map<String, dynamic> map}) => _$SnackTagFromJson(map);
 }
