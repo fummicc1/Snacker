@@ -25,18 +25,18 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
   @override
   Future<int> createSnackTagKind({required SnackTagKind snackTagKind}) {
     return _databaseType.create(
-        data: snackTagKind.toMap(), tableName: Snack.tableName);
+        data: snackTagKind.toMap(), collectionName: Snack.collectionName);
   }
 
   @override
   Future deleteSnackTagKind({required int id}) {
-    return _databaseType.delete(id: id, tableName: Snack.tableName);
+    return _databaseType.delete(id: id, collectionName: Snack.collectionName);
   }
 
   @override
   Future<List<SnackTagKind>> getAllSnackTagKind() async {
     try {
-      final response = await _databaseType.readAll(tableName: Snack.tableName);
+      final response = await _databaseType.readAll(collectionName: Snack.collectionName);
       final list = response
           .map((map) => SnackTagKind.fromMap(map: map))
           .toList()
@@ -50,7 +50,7 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
   @override
   Future<SnackTagKind> getSnackTagKind({required int id}) async {
     final response = await _databaseType
-        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+        .read(collectionName: Snack.collectionName, where: "id = ?", whereArgs: ["$id"]);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -60,7 +60,7 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
   @override
   Future updateSnackTagKind({required SnackTagKind newSnackTagKind}) async {
     return _databaseType.update(
-        data: newSnackTagKind.toMap(), tableName: Snack.tableName);
+        data: newSnackTagKind.toMap(), collectionName: Snack.collectionName);
   }
 
   @override
@@ -77,7 +77,7 @@ class SnackTagKindRepositoryImpl with SnackTagKindRepository {
 
     try {
       final response = await _databaseType.read(
-          tableName: Snack.tableName, where: where, whereArgs: args);
+          collectionName: Snack.collectionName, where: where, whereArgs: args);
       return response.map((res) => SnackTagKind.fromMap(map: res)).toList();
     } catch (e) {
       return Future.error(e);

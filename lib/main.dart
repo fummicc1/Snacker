@@ -1,13 +1,13 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:snacker/color.dart';
-import 'package:snacker/database.dart';
 import 'package:snacker/ui/pages/home_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await database.open();
+  await Firebase.initializeApp();
   runApp(const ProviderScope(child: MyApp()));
 }
 

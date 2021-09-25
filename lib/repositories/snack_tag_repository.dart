@@ -2,6 +2,7 @@ import 'package:snacker/database.dart';
 import 'package:snacker/entities/snack.dart';
 import 'package:snacker/entities/snack_tag.dart';
 import 'package:snacker/entities/snack_tag_kind.dart';
+import 'package:snacker/firebase/firestore.dart';
 import 'package:tuple/tuple.dart';
 
 typedef SnackTagKindName = String;
@@ -15,9 +16,6 @@ mixin SnackTagRepository {
 
   Future<List<SnackTag>> getAllSnackTag();
 
-  Future<List<SnackTag>> getSnackTagWithQuery(
-      {required List<EqualQueryModel> queries});
-
   Future<List<Tuple2<SnackTag, SnackTagKindName>>> getSnackTagListOfSnack(
       {required int? snackId});
 
@@ -25,25 +23,26 @@ mixin SnackTagRepository {
 }
 
 class SnackTagRepositoryImpl with SnackTagRepository {
-  final DatabaseType _databaseType;
+  final FirestoreClient _firestoreClient;
 
-  SnackTagRepositoryImpl(this._databaseType);
+  SnackTagRepositoryImpl(this._firestoreClient);
 
   @override
   Future<int> createSnackTag({required SnackTag snackTag}) {
+
     return _databaseType.create(
-        data: snackTag.toMap(), tableName: Snack.tableName);
+        data: snackTag.toMap(), collectionName: Snack.collectionName);
   }
 
   @override
   Future deleteSnackTag({required int id}) {
-    return _databaseType.delete(id: id, tableName: Snack.tableName);
+    return _databaseType.delete(id: id, collectionName: Snack.collectionName);
   }
 
   @override
   Future<List<SnackTag>> getAllSnackTag() async {
     try {
-      final response = await _databaseType.readAll(tableName: Snack.tableName);
+      final response = await _databaseType.readAll(collectionName: Snack.collectionName);
       final list = response
           .map((map) => SnackTagKind.fromMap(map: map))
           .toList()
@@ -57,7 +56,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   @override
   Future<SnackTag> getSnackTag({required int id}) async {
     final response = await _databaseType
-        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+        .read(collectionName: Snack.collectionName, where: "id = ?", whereArgs: ["$id"]);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -67,7 +66,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
   @override
   Future updateSnackTag({required SnackTag newSnackTag}) async {
     return _databaseType.update(
-        data: newSnackTag.toMap(), tableName: Snack.tableName);
+        data: newSnackTag.toMap(), collectionName: Snack.collectionName);
   }
 
   @override
@@ -84,7 +83,7 @@ class SnackTagRepositoryImpl with SnackTagRepository {
 
     try {
       final response = await _databaseType.read(
-          tableName: Snack.tableName, where: where, whereArgs: args);
+          collectionName: Snack.collectionName, where: where, whereArgs: args);
       return response.map((res) => SnackTag.fromMap(map: res)).toList();
     } catch (e) {
       return Future.error(e);

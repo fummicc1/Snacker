@@ -1,43 +1,44 @@
 import 'dart:async';
 
-import 'package:snacker/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:snacker/entities/snack.dart';
+import 'package:snacker/firebase/firestore.dart';
 
 mixin SnackRepository {
-  Future<int> createSnack({required Snack snack});
+  Future<String> createSnack({required Snack snack});
 
   Future updateSnack({required Snack newSnack});
 
-  Future<Snack> getSnack({required int id});
+  Future<Snack> getSnack({required String id});
 
   Future<List<Snack>> getAllSnack();
 
   Future<List<Snack>> getSnackWithQuery(
       {required List<EqualQueryModel> queries});
 
-  Future deleteSnack({required int id});
+  Future deleteSnack({required String id});
 }
 
 class SnackRepositoryImpl with SnackRepository {
-  final DatabaseType _databaseType;
+  final FirestoreClient _firestoreClient;
 
-  SnackRepositoryImpl(this._databaseType);
+  SnackRepositoryImpl(this._firestoreClient);
 
   @override
-  Future<int> createSnack({required Snack snack}) {
-    return _databaseType.create(
-        data: snack.toMap(), tableName: Snack.tableName);
+  Future<String> createSnack({required Snack snack}) async {
+    final documentID = await _firestoreClient.createDoc(collectionName: Snack.collectionName, data: snack.toMap());
+    return documentID;
   }
 
   @override
-  Future deleteSnack({required int id}) {
-    return _databaseType.delete(id: id, tableName: Snack.tableName);
+  Future deleteSnack({required String id}) async {
+    await _firestoreClient.deleteDocWithPath(collection: Snack.collectionName, documentId: id);
   }
 
   @override
   Future<List<Snack>> getAllSnack() async {
     try {
-      final response = await _databaseType.readAll(tableName: Snack.tableName);
+      final response = await _firestoreClient.getCollection(Snack.collectionName);
       final snackList =
           response.map((map) => Snack.fromMap(map: map)).toList().cast<Snack>();
       return snackList;
@@ -47,9 +48,11 @@ class SnackRepositoryImpl with SnackRepository {
   }
 
   @override
-  Future<Snack> getSnack({required int id}) async {
-    final response = await _databaseType
-        .read(tableName: Snack.tableName, where: "id = ?", whereArgs: ["$id"]);
+  Future<Snack> getSnack({required String id}) async {
+    final filter = EqualQueryModel(field: "id", value: id);
+    Query base = FirebaseFirestore.instance.collection(Snack.collectionName);
+    base = filter.build(from: base);
+    final response = await _firestoreClient.getWithQuery(base);
     if (response.isEmpty) {
       return Future.error("No snack found");
     }
@@ -58,8 +61,10 @@ class SnackRepositoryImpl with SnackRepository {
 
   @override
   Future updateSnack({required Snack newSnack}) async {
+    final ref = FirebaseFirestore.instance.collection(Snack.collectionName).doc(newSnack.id);
+    _firestoreClient.updateDocWithReference(reference: newSnack, data: data)
     return _databaseType.update(
-        data: newSnack.toMap(), tableName: Snack.tableName);
+        data: newSnack.toMap(), collectionName: Snack.collectionName);
   }
 
   @override
@@ -76,7 +81,7 @@ class SnackRepositoryImpl with SnackRepository {
 
     try {
       final response = await _databaseType.read(
-          tableName: Snack.tableName, where: where, whereArgs: args);
+          collectionName: Snack.collectionName, where: where, whereArgs: args);
       return response.map((res) => Snack.fromMap(map: res)).toList();
     } catch (e) {
       return Future.error(e);

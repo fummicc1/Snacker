@@ -3,14 +3,14 @@ part 'snack.g.dart';
 
 @JsonSerializable()
 class Snack {
-  int? id;
+  String? id;
   String title;
   String url;
   String? thumbnailUrl;
   int priority;
   bool isArchived;
 
-  static const tableName = "snacks";
+  static const collectionName = "snacks";
 
   Snack(
       {this.id,
